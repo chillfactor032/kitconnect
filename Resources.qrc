@@ -1,0 +1,21 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>version.json</file>
+    <file>resources/img/icons/x.svg</file>
+    <file>resources/img/icons/maximize.svg</file>
+    <file>resources/img/icons/minimize.svg</file>
+    <file>resources/img/icons/menu.svg</file>
+    <file>resources/img/icons/home.svg</file>
+    <file>resources/img/icons/github.svg</file>
+    <file>resources/img/icons/info.svg</file>
+    <file>resources/img/icons/code.svg</file>
+    <file>resources/img/icons/file-text.svg</file>
+    <file>resources/img/icons/check-circle.svg</file>
+    <file>resources/img/icons/loading.gif</file>
+    <file>resources/img/icons/headphones.svg</file>
+    <file>resources/img/icons/music.svg</file>
+    <file>resources/img/icons/refresh-cw.svg</file>
+    <file>resources/img/icons/arrow-left.svg</file>
+    <file>resources/img/icons/arrow-right.svg</file>
+</qresource>
+</RCC>
