@@ -37,6 +37,7 @@ class TD50X(QRunnable):
         midi_msg = Signal(int, bool, list)
 
     def __init__(self, td50x_id=None):
+        super(TD50X, self).__init__()
         if td50x_id is None:
             self.td50x_id = TD50X.DEVICE_ID
         else:
@@ -146,7 +147,7 @@ class TD50X(QRunnable):
     @Slot()
     def run(self):
         if self.input_device_id < 0 or self.output_device_id < 0:
-            self.signals.log("Midi device not set.", LogLevel.INFO)
+            self.signals.log.emit("Midi device not set.", LogLevel.INFO)
             return
         self.input_device = pygame.midi.Input(self.input_device_id)
         self.output_device = pygame.midi.Output(self.output_device_id)
