@@ -83,7 +83,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         #start thread
         self.threadpool.start(self.td50x)
-        
+
         self.show()
         self.log("KitConnect started")
 
@@ -100,7 +100,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
         print(f"Device Selected: {index}")
         device = self.deviceComboBox.currentData()
-        print(device)
+        self.td50x.update_devices(device["input_id"], device["output_id"])
 
     def refreshKit(self):
         print("Refresh Kit")

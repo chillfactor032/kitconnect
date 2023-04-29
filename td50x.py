@@ -146,14 +146,15 @@ class TD50X(QRunnable):
 
     @Slot()
     def run(self):
-        if self.input_device_id < 0 or self.output_device_id < 0:
-            self.signals.log.emit("Midi device not set.", LogLevel.INFO)
-            return
-        self.input_device = pygame.midi.Input(self.input_device_id)
-        self.output_device = pygame.midi.Output(self.output_device_id)
         sysex_response_buffer = None
         self.signals.log.emit("TD-50X Midi Client Started", LogLevel.INFO)
+
         while self.stopped == False:
+            #If no devices specified just do nothing
+            if self.input_device_id < 0 or self.output_device_id < 0 or self.input_device is None or self.output_device is None:
+                time.sleep(0.01)
+                continue
+
             #If devices have changed, update
             if self.update:
                 self.signals.log.emit("Updating Midi Devices", LogLevel.INFO)
@@ -164,11 +165,6 @@ class TD50X(QRunnable):
                 self.output_device = pygame.midi.Output(self.output_device_id)
                 self.signals.log.emit(f"Updated midi devices to in=[{self.input_device}] out=[{self.output_device_id}]", LogLevel.DEBUG)
                 self.update = False
-                
-            #If no devices specified just do nothing
-            if self.input_device < 0 or self.output_device < 0 or self.input_device is None or self.output_device is None:
-                time.sleep(0.01)
-                continue
 
             #Write a message from the outbox if its there
             if len(self.outbox) > 0:
