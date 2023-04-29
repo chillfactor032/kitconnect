@@ -80,6 +80,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.restoreGeometry(geometry) 
             self.restoreState(window_state)
         self.setWindowFlags(Qt.FramelessWindowHint)
+
+        #start thread
+        self.threadpool.start(self.td50x)
+        
         self.show()
         self.log("KitConnect started")
 
@@ -112,7 +116,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.current_kit_id = (self.current_kit_id - 1) % 128
         msg = [0xC9, self.current_kit_id, 0x00, 0x7F]
         self.td50x.send_msg(msg)
-        
+
     def showAbout(self):
         repo = self.repoUrl.toString()
         text = f"KitConnect TD-50X Midi GUI Client\n\n{self.description}\n\nGitHub: {repo}\nAuthor: {self.author} <{self.author_email}>"
