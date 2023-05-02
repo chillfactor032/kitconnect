@@ -100,6 +100,13 @@ class MidiConnection():
         self.outbox.append(msg)
 
     @staticmethod
+    def to_str(msg):
+        new_msg = []
+        for x in range(0, len(msg)):
+            new_msg.append(hex(msg[x]))
+        return new_msg
+    
+    @staticmethod
     def get_devices():
         devices = []
         if pygame.midi.get_init() == False:
