@@ -67,6 +67,9 @@ class MidiConnection():
         sysex_response_buffer = None
 
         while not self.stopped:
+            #Sleep for a bit if theres no data and nothing in outbox
+            while input_device.poll() == False and len(self.outbox) == 0:
+                time.sleep(0.001)
             #Send a msg from the outbox
             if len(self.outbox) > 0:
                 evt = self.outbox.pop(0)
