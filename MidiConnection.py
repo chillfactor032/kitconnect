@@ -24,6 +24,7 @@ class MidiConnection():
         self.output_device = None
         self.input_device = None
         self.stopped = False
+        self.done = False
         self.outbox = []
     
     def handle_msg(self, data, timestamp):
@@ -97,11 +98,18 @@ class MidiConnection():
                 else:
                     #Handle one-packet msg
                     self.handle_msg(data, timestamp)
+        self.done = True
 
     #Add a msg to the outbox
     def send_msg(self, msg):
         self.outbox.append(msg)
 
+    def wait(self, timeout=3):
+        start = time.time()
+        elapsed = 0
+        while elapsed < timeout and self.done == False:
+            time.sleep(0.001)
+            
     @staticmethod
     def to_str(msg):
         new_msg = []

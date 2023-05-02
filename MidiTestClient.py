@@ -73,6 +73,7 @@ while True:
     except KeyboardInterrupt as ke:
         print("\nKeyboard Interrupt.")
         midi.stop()
+        midi.wait()
         quit(0)
     if selection >= 0 and selection < len(msgs):
         midi.send_msg(msgs[selection]["msg"])
