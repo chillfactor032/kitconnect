@@ -64,7 +64,8 @@ class MidiConnection():
             pygame.midi.init()
         input_device = pygame.midi.Input(self.input_device_id)
         output_device = pygame.midi.Output(self.output_device_id)
-
+        sysex_response_buffer = None
+        
         while not self.stopped:
             #Send a msg from the outbox
             if len(self.outbox) > 0:
