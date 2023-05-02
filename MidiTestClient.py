@@ -14,7 +14,7 @@ incoming_msg_buffer = []
 msgs = [
     {
         "desc": "Program Change Kit 100",
-        "msg": [0xC9, 0x99, 0x00, 0x7F]
+        "msg": [0xC9, 99, 0x00, 0x7F]
     },
     {
         "desc": "Program Change Kit 30",
