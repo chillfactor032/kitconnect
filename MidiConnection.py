@@ -65,16 +65,17 @@ class MidiConnection():
         input_device = pygame.midi.Input(self.input_device_id)
         output_device = pygame.midi.Output(self.output_device_id)
         sysex_response_buffer = None
-        
+
         while not self.stopped:
             #Send a msg from the outbox
             if len(self.outbox) > 0:
-                if self.outbox[0][0] == MidiConnection.STATUS_SYSEX:
+                evt = self.outbox.pop(0)
+                if evt[0] == MidiConnection.STATUS_SYSEX:
                     #Send a SysEx Msg
-                    output_device.write_sys_ex(0,self.outbox[0])
+                    output_device.write_sys_ex(0,evt)
                 else:
                     #Send a Msg
-                    output_device.write([[self.outbox[0], 0]])
+                    output_device.write([[evt, 0]])
 
             #Read Some Events
             event_list = pygame.midi.Input.read(input_device, 16)
