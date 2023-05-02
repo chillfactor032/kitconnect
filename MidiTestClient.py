@@ -24,6 +24,7 @@ msgs = [
 
 #Functions
 def quit(code):
+    print(f"Exit Code:{code}")
     sys.exit(code)
 
 def recv(msg, timestamp):
@@ -70,7 +71,8 @@ while True:
     except ValueError as ve:
         continue
     except KeyboardInterrupt as ke:
-        print("\nKeyboard Interrupt. Goodbye.")
+        print("\nKeyboard Interrupt.")
+        midi.stop()
         quit(0)
     if selection >= 0 and selection < len(msgs):
         midi.send_msg(msgs[selection]["msg"])
