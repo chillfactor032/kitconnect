@@ -27,6 +27,7 @@ def quit(code):
     sys.exit(code)
 
 def recv(msg, timestamp):
+    msg = MidiConnection.to_str(msg)
     print("< "+str(msg) + f" {timestamp}")
 
 #Get Midi Devices
