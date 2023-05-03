@@ -8,6 +8,8 @@ import pygame.midi
 import time
 import random
 
+
+
 class MidiConnection():
 
     COMMAND_RQ1 = 0x11
@@ -25,6 +27,7 @@ class MidiConnection():
         self.input_device = None
         self.stopped = False
         self.done = False
+        self.test_msgs = []
         self.outbox = []
     
     def handle_msg(self, data, timestamp):
@@ -42,12 +45,15 @@ class MidiConnection():
             #Send a msg from the outbox
             if len(self.outbox) > 0:
                 msg = self.outbox.pop(0)
-                print("> "+str(msg))
+                print("> "+MidiConnection.to_str(msg))
             elapsed = time.time()-start
             if rand > 0.90:
-                self.handle_msg([0x03, 0x04, 0x05, 0x06], round(elapsed*1000))
+                if len(self.test_msgs) > 0:
+                    self.handle_msg(random.choice(self.test_msgs), round(elapsed*1000))
+                else:
+                    self.handle_msg([random.randint(0,0x7E), random.randint(0,0x7E), random.randint(0,0x7E), random.randint(0,0x7E)], round(elapsed*1000))
             time.sleep(rand)
-        print("done")
+        self.done = True
 
     def stop(self):
         self.stopped = True
@@ -109,13 +115,10 @@ class MidiConnection():
         elapsed = 0
         while elapsed < timeout and self.done == False:
             time.sleep(0.001)
-            
+    
     @staticmethod
     def to_str(msg):
-        new_msg = []
-        for x in range(0, len(msg)):
-            new_msg.append(hex(msg[x]))
-        return new_msg
+        return "["+", ".join(f"{b:#0{4}x}" for b in msg)+"]"
     
     @staticmethod
     def get_devices():

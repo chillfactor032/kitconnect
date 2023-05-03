@@ -2,8 +2,16 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
-from MidiConnection import MidiConnection
+from td50x import TD50X
 import sys
+import random
+
+#Some Test Msgs
+test_msgs = [
+    [0xC9, random.randint(0,127), 0x00, 0x7f],
+    [0x93, random.choice(list(TD50X.NoteNumbers)).value, random.randint(1,127), 0x00],
+    [0xC6, random.randint(0,127), 0x00, 0x7f]
+]
 
 #Vars
 device = None
@@ -28,11 +36,11 @@ def quit(code):
     sys.exit(code)
 
 def recv(msg, timestamp):
-    msg = MidiConnection.to_str(msg)
-    print("< "+str(msg) + f" {timestamp}")
+    msg = TD50X.to_str(msg)
+    print("< "+ msg + f" {timestamp}")
 
 #Get Midi Devices
-devices = MidiConnection.get_devices()
+devices = TD50X.get_midi_devices()
 
 #Select Midi Device
 while device is None:
@@ -54,8 +62,9 @@ while device is None:
     device = devices[selection]
 
 #Create MidiConnection
-midi = MidiConnection(device["input_id"],device["output_id"],recv)
-midi.start()
+td50x = TD50X(device["input_id"],device["output_id"])
+td50x.midi.test_msgs = test_msgs
+td50x.midi_start(test=True)
 
 #Send / Recv Midi Packets
 while True:
@@ -72,10 +81,9 @@ while True:
         continue
     except KeyboardInterrupt as ke:
         print("\nKeyboard Interrupt.")
-        midi.stop()
-        midi.wait()
+        td50x.midi_stop(wait=True)
         quit(0)
     if selection >= 0 and selection < len(msgs):
-        midi.send_msg(msgs[selection]["msg"])
+        td50x.send_msg(msgs[selection]["msg"])
     else:
         print("Bad selection try again.")

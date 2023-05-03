@@ -12,195 +12,212 @@ from enum import Enum
 #PySide6 Imports
 from PySide6.QtCore import QRunnable, Signal, Slot, QObject
 
-#Log Levels
-class LogLevel(Enum):
-    INFO = 0
-    ERROR = 10
-    DEBUG = 20
-    
-class TD50X(QRunnable):
+from MidiConnection import MidiConnection
 
-    MODEL_TD50X =  [0, 0, 0, 0, 7]
-    COMMAND_RQ1 = 0x11
-    STATUS_SYSEX = 0xF0
-    STATUS_EOX = 0xF7
-    STATUS_TIMING_CLOCK = 0xF8
-    STATUS_PROGRAM_CHANGE = 0xC9
-    VENDOR_ID_ROLAND = 0x41
-    DEVICE_ID = 0x10
-    TARGET_DEVICE_NAME = "TD-50X"
+class TD50X():
 
-    class Signals(QObject):
-        done = Signal(bool)
-        log = Signal(str, LogLevel)
-        #Midi Msg TYPE, Incoming, Msg Data
-        midi_msg = Signal(int, bool, list)
+    class Status(Enum):
+        UNKNOWN = 0
+        NOTE_OFF = range(0x80, 0x90)
+        NOTE_ON = range(0x90, 0xa0)
+        KEY_PRESSURE = range(0xa0, 0xb0)
+        CTRL_CHG = range(0xb0, 0xc0)
+        PROG_CHG = range(0xc0, 0xd0)
+        SYSEX = 0xf0
+        EOX = 0xf7
+        CLOCK = 0xf8
+        START = 0xfa
+        ACTIVE_SENSING = 0xfe
 
-    def __init__(self, td50x_id=None):
+        def __eq__(self, other) -> bool:
+            if type(self.value) == range:
+                return other in self.value
+            if type(other) == TD50X.Status:
+                return self.value == other.value
+            if type(other) == int:
+                return self.value == other
+            return False
+
+    class ControlChange(Enum):
+        MODULATION = 0x01
+        BREATH = 0x02
+        FOOT = 0x04
+        EXPRESSION = 0x0b
+        GENERAL_PURPOSE_1 = 0x10
+        GENERAL_PURPOSE_2 = 0x11
+        GENERAL_PURPOSE_3 = 0x12
+        GENERAL_PURPOSE_4 = 0x13
+        GENERAL_PURPOSE_5 = 0x50
+        GENERAL_PURPOSE_6 = 0x51
+        GENERAL_PURPOSE_7 = 0x52
+        GENERAL_PURPOSE_8 = 0x53
+        HIGH_VELOCITY_PREFIX = 0x58
+        ALL_SOUNDS_OFF = 0x78
+        RESET_ALL_CONTROLLERS = 0x79
+        ALL_NOTES_OFF = 0x7B
+        OMNI_OFF = 0x7C
+        OMNI_ON = 0x7D
+        MONO = 0x7E
+        POLY = 0x7F
+
+    class Command(Enum):
+        RQ1 = 0x11
+        DT1 = 0x12
+
+    class NoteNumbers(Enum):
+        KICK = 36
+        SNARE_HEAD = 38
+        SNARERIM = 40
+        SNARE_X_STICK = 37
+        TOM_1 = 48
+        TOM_1_RIM = 50
+        TOM_2 = 45
+        TOM_2_RIM = 47
+        TOM_3_HEAD = 43
+        TOM_3_RIM = 58
+        TOM_4_HEAD = 41
+        TOM_4_RIM = 39
+        HH_OPEN_BOW = 46
+        HH_OPEN_EDGE = 26
+        HH_CLOSED_BOW = 42
+        HH_CLOSED_EDGE = 22
+        HH_PEDAL = 44
+        CRASH_1_BOW = 49
+        CRASH_1_EDGE = 55
+        CRASH_2_BOW = 57
+        CRASH_2_EDGE = 52
+        RIDE_BOW = 51
+        RIDE_EDGE = 59
+        RIDE_BELL = 53
+        AUX_1_HEAD = 27
+        AUX1_RIM = 28
+        AUX_2_HEAD = 29
+        AUX2_RIM = 30
+        AUX_3_HEAD = 31
+        AUX3_RIM = 32
+        AUX_4_HEAD = 33
+        AUX4_RIM = 34
+
+    def __init__(self, input_device_id, output_device_id):
         super(TD50X, self).__init__()
-        if td50x_id is None:
-            self.td50x_id = TD50X.DEVICE_ID
+        self.kit_obj = {
+            "id": -1,
+            "name": "",
+            "subname": ""
+        }
+        self.midi_device_input_id = input_device_id
+        self.midi_device_output_id = output_device_id
+        self.midi = MidiConnection(self.midi_device_input_id,self.midi_device_output_id,self.recv_msg)
+
+    def midi_start(self, test=False):
+        if test:
+            self.midi.start_test()
         else:
-            self.td50x_id = td50x_id
-        self.input_device_id = -1
-        self.output_device_id = -1
-        self.output_device = None
-        self.input_device = None
-        self.stopped = False
-        self.outbox = []
-        self.update = True
-        self.signals = self.Signals()
-        pygame.midi.init()
+            self.midi.start()
+
+    def midi_stop(self, wait=True):
+        self.midi.stop()
+        if wait:
+            self.midi.wait()
+
+    #Fetch and return the current kid on the TD-50X
+    def fetch_current_kit(self):
+        pass
+
+    def get_kit_id(self):
+        return self.kit_obj["id"]
     
+    def get_kit_name(self):
+        return self.kit_obj["name"]
+    
+    def get_kit_subname(self):
+        return self.kit_obj["subname"]
+    
+    def set_kit(self, kit_id=None, relative=0):
+        if kit_id is None and relative == 0:
+            return
+        if kit_id is None:
+            kit_id = self.kit_obj["id"]
+        relative = relative % 128
+        # set the kit
+    
+    def send_msg(self, msg):
+        self.midi.send_msg(msg)
+
+    def recv_msg(self, msg, timestamp):
+        if TD50X.Status.SYSEX == msg[0]:
+            pass
+        elif TD50X.Status.PROG_CHG == msg[0]:
+            pass
+        elif TD50X.Status.NOTE_ON == msg[0]:
+            pass
+        elif TD50X.Status.PROG_CHG == msg[0]:
+            pass
+        elif TD50X.Status.PROG_CHG == msg[0]:
+            pass
+        else:
+            pass
+        print("< " + TD50X.to_str(msg) + f"\t{timestamp}")
+
     @staticmethod
     def to_str(msg):
-        new_msg = []
-        for x in range(0, len(msg)):
-            new_msg.append(hex(msg[x]))
-        return new_msg
-    
-    def set_input_device(self, device_id):
-        self.input_device_id = device_id
-
-    def set_output_device(self, device_id):
-        self.output_device_id = device_id
-
-    def set_device_id(self, device_id):
-        self.td50x_id = device_id
-
-    def get_devices(self):
-        devices = []
-        num_midi_devices = pygame.midi.get_count()
-        self.signals.log.emit(f"Found {num_midi_devices} MIDI devices", LogLevel.INFO)
-        input_device_id = None
-        output_device_id = None
-        for x in range(num_midi_devices):
-            device_info = pygame.midi.get_device_info(x)
-            device = {
-                "name": "",
-                "input_id": -1,
-                "output_id": -1,
-                "desc": ""
-            }
-            if not device_info:
-                continue
-            iface, dname, is_input, is_output, opened = device_info
-            device["name"] = dname.decode(encoding="UTF-8")
-            if is_input:
-                device["input_id"] = x
-            if is_output:
-                device["output_id"] = x
-            self.signals.log.emit(f"  [{x}] [{device['name']}] {is_input} {is_output}", LogLevel.DEBUG)
-            # Look for other devices with the same name
-            for y in range(x+1,num_midi_devices):
-                device_info = pygame.midi.get_device_info(y)
-                if not device_info:
-                    continue
-                iface, dname, is_input, is_output, opened = device_info
-                if device["name"] == dname.decode(encoding="UTF-8"):
-                    #Found a matching Device Name
-                    if is_input:
-                        device["input_id"] = y
-                    if is_output:
-                        device["output_id"] = y
-            devices.append(device)
-
-        #Create the "Descriptions"
-        for device in devices:
-            device["desc"] = device["name"]
-            # 4 Possibilities
-            #   Output Only
-            if device["input_id"] < 0 and device["output_id"] >= 0:
-                device["desc"] += " (output)"
-            #   Input Only
-            if device["input_id"] >= 0 and device["output_id"] < 0:
-                device["desc"] += " (input)"
-            #   Input + Output
-            if device["input_id"] >= 0 and device["output_id"] >= 0:
-                device["desc"] += " (input + output)"
-            #   No Input or Output?
-            if device["input_id"] < 0 and device["output_id"] < 0:
-                device["desc"] += " (No Input or Output - Invalid Device)"
-        print(devices)
-        return devices
-            
-
-    def is_connected(self):
-        pass
-    
-    def update_devices(self, input_device_id, output_device_id):
-        self.input_device_id = input_device_id
-        self.output_device_id = output_device_id
-        self.update = True
-
-    def send_msg(self, msg):
-        self.outbox.append(msg)
-
-    def stop_midi(self):
-        self.stopped = True
-
-    #Handle an incoming message
-    def handle_msg(self, msg, timestamp):
-        self.signals.midi_msg.emit(0, True, msg)
-        print(f'{[f"{d:02x}" for d in msg]} {timestamp * 1e-3 : .3f}')
-
-    @Slot()
-    def run(self):
-        sysex_response_buffer = None
-        self.signals.log.emit("TD-50X Midi Client Started", LogLevel.INFO)
-
-        while self.stopped == False:
-            #If no devices specified just do nothing
-            if self.input_device_id < 0 or self.output_device_id < 0 or self.input_device is None or self.output_device is None:
-                time.sleep(0.01)
-                continue
-
-            #If devices have changed, update
-            if self.update:
-                self.signals.log.emit("Updating Midi Devices", LogLevel.INFO)
-                self.output_device.abort()
-                self.output_device.stop()
-                self.input_device.close()
-                self.input_device = pygame.midi.Input(self.input_device_id)
-                self.output_device = pygame.midi.Output(self.output_device_id)
-                self.signals.log.emit(f"Updated midi devices to in=[{self.input_device}] out=[{self.output_device_id}]", LogLevel.DEBUG)
-                self.update = False
-
-            #Write a message from the outbox if its there
-            if len(self.outbox) > 0:
-                self.signals.midi_msg.emit(0, False, self.outbox[0])
-                if self.outbox[0][0] == TD50X.STATUS_SYSEX:
-                    self.signals.log.emit("Sending SysEx Msg: " + TD50X.to_str(self.outbox[0]), LogLevel.DEBUG)
-                    self.output_device.write_sys_ex(0, self.outbox[0])
-                else:
-                    self.signals.log.emit("Sending Midi Msg: " + TD50X.to_str(self.outbox[0]), LogLevel.DEBUG)
-                    self.output_device.write([[self.outbox[0], 0]])
-
-            #Read Some Events
-            event_list = pygame.midi.Input.read(self.input_device, 16)
-            for event in event_list:
-                data, timestamp = event
-                if sysex_response_buffer is not None:
-                    sysex_response_buffer.extend(data)
-                    if TD50X.STATUS_EOX in data:
-                        self.handle_msg(sysex_response_buffer, timestamp)
-                        sysex_response_buffer = None
-                elif data[0] == TD50X.STATUS_SYSEX:
-                    #Begin recv a sysex msg
-                    sysex_response_buffer = data
-                elif data[0] == TD50X.STATUS_TIMING_CLOCK:
-                    continue  # clock sync message
-                else:
-                    #Handle one-packet msg
-                    self.handle_msg(data, timestamp)
-
-        #Clean up if stopped
-        self.output_device.abort()
-        self.output_device.stop()
-        self.input_device.close()
-        self.signals.log.emit("TD-50X Midi Client Stopped", LogLevel.INFO)
+        #Get Parse Status Byte
+        status = TD50X.Status.UNKNOWN
+        byte_list = msg.copy()
+        midi_channel = -1
+        if len(msg) < 4:
+            return ""
         
+        # Classify the status byte
+        for status_enum in TD50X.Status:
+            if status_enum == msg[0]:
+                status = status_enum
+                byte_list[0] = status.name
+                break
 
+        #Based on status byte, parse the midi_channel
+        if type(status.value) == range:
+            midi_channel = TD50X.get_midi_channel(msg[0])
+            byte_list[0] += f"(midi_ch={midi_channel})"
 
+        if status in [TD50X.Status.NOTE_ON, TD50X.Status.NOTE_OFF, TD50X.Status.KEY_PRESSURE]:
+            
+            #Byte 2 is a note number, translate to drum
+            for note_num_enum in TD50X.NoteNumbers:
+                if note_num_enum.value == msg[1]:
+                    byte_list[1] = note_num_enum.name + f"({note_num_enum.value})"
+                    break
+        
+        if status in [TD50X.Status.NOTE_ON, TD50X.Status.NOTE_OFF]:
+            byte_list[2] = f"VELOCITY({msg[2]})"
 
+        if status == TD50X.Status.PROG_CHG:
+            #Byte 2 is a kit number
+            byte_list[1] = f"KIT({msg[1]+1})"
+
+        if status in TD50X.ControlChange:
+            # What kind of control change is it?
+            for ctrl__chg_enum in TD50X.ControlChange:
+                if ctrl__chg_enum == msg[1]:
+                    byte_list[1] = ctrl__chg_enum
+
+        return "["+ ",".join([str(x) for x in byte_list]) +"]"
+
+    @staticmethod
+    def get_midi_devices():
+        return MidiConnection.get_devices()
     
+    @staticmethod
+    def to_hex(msg):
+        return MidiConnection.to_str(msg)
+
+    @staticmethod
+    def get_midi_channel(byte):
+        return byte & 0x0f
+    
+    @staticmethod
+    def checksum(msg):
+        sum = 0
+        for b in msg:
+            sum += b
+        return 128 - (sum % 128)
