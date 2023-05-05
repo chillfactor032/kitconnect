@@ -35,7 +35,7 @@ class MidiConnection():
             self.recv_msg_callback(data,timestamp)
         else:
             print(f'{[f"{d:02x}" for d in data]} {timestamp * 1e-3 : .3f}')
-    
+
     def test_recv_msgs(self):
         start = time.time()
         elapsed = 0

@@ -38,6 +38,11 @@ class TD50X():
                 return self.value == other
             return False
 
+        def base(self):
+            if type(self.value) == range:
+                return min(self.value)
+            return self.value
+
     class ControlChange(Enum):
         MODULATION = 0x01
         BREATH = 0x02
@@ -98,7 +103,7 @@ class TD50X():
         AUX_4_HEAD = 33
         AUX4_RIM = 34
 
-    def __init__(self, input_device_id, output_device_id):
+    def __init__(self, input_device_id, output_device_id, midi_channel=0x09):
         super(TD50X, self).__init__()
         self.kit_obj = {
             "id": -1,
@@ -107,6 +112,7 @@ class TD50X():
         }
         self.midi_device_input_id = input_device_id
         self.midi_device_output_id = output_device_id
+        self.midi_channel = midi_channel
         self.midi = MidiConnection(self.midi_device_input_id,self.midi_device_output_id,self.recv_msg)
 
     def midi_start(self, test=False):
@@ -133,13 +139,19 @@ class TD50X():
     def get_kit_subname(self):
         return self.kit_obj["subname"]
     
-    def set_kit(self, kit_id=None, relative=0):
-        if kit_id is None and relative == 0:
+    # Set the kit to kit number
+    # Kit Number is 1-128, not the 0 based kit Id
+    def set_kit(self, kit_num=None, relative=0):
+        if kit_num is None and relative == 0:
             return
-        if kit_id is None:
+        if kit_num is None:
             kit_id = self.kit_obj["id"]
-        relative = relative % 128
-        # set the kit
+        else:
+            if kit_num < 1 or kit_num > 128:
+                return
+            kit_id = kit_num - 1 
+        kit_id = (relative+kit_id) % 128
+        self.midi.send_msg([TD50X.Status.PROG_CHG.base()+self.midi_channel, kit_id, 0x00, 0x7F])
     
     def send_msg(self, msg):
         self.midi.send_msg(msg)

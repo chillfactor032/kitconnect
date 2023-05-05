@@ -21,12 +21,8 @@ incoming_msg_buffer = []
 #Prepared Midi Messages
 msgs = [
     {
-        "desc": "Program Change Kit 100",
-        "msg": [0xC9, 99, 0x00, 0x7F]
-    },
-    {
-        "desc": "Program Change Kit 30",
-        "msg": [0xC9, 29, 0x00, 0x7F]
+        "desc": "Set Kit {Kit Num}",
+        "msg": ""
     }
 ]
 
@@ -67,6 +63,7 @@ td50x.midi.test_msgs = test_msgs
 td50x.midi_start(test=True)
 
 #Send / Recv Midi Packets
+selection = ""
 while True:
     #print options
     i = 0
@@ -76,14 +73,19 @@ while True:
         print(f"[{i}] {option['desc']}")
     print("----------------------")
     try:
-        selection = int(input("Make Selection:\n"))
+        selection = [int(x) for x in input("Make Selection:\n").split()]
     except ValueError as ve:
+        print("Invalid Input: Must be integers")
         continue
     except KeyboardInterrupt as ke:
         print("\nKeyboard Interrupt.")
+        print("Waiting for MidiConnection to stop...", end="")
         td50x.midi_stop(wait=True)
+        print("done")
         quit(0)
-    if selection >= 0 and selection < len(msgs):
-        td50x.send_msg(msgs[selection]["msg"])
-    else:
-        print("Bad selection try again.")
+    if selection[0] == 0:
+        if len(selection) >= 2 and selection[1] <= 128 and selection[1] > 0:
+            # Set Kit Number
+            td50x.set_kit(selection[1])
+        else:
+            print("To select a kit, enter 0 followed by the kit number [1-128]")
