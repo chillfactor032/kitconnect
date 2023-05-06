@@ -23,6 +23,10 @@ msgs = [
     {
         "desc": "Set Kit {Kit Num}",
         "msg": ""
+    },
+    {
+        "desc": "Fetch Current Kit",
+        "msg": ""
     }
 ]
 
@@ -59,8 +63,9 @@ while device is None:
 
 #Create MidiConnection
 td50x = TD50X(device["input_id"],device["output_id"])
-td50x.midi.test_msgs = test_msgs
-td50x.midi_start(test=True)
+#td50x.midi.test_msgs = test_msgs
+#td50x.midi_start(test=True)
+td50x.midi_start()
 
 #Send / Recv Midi Packets
 selection = ""
@@ -83,9 +88,13 @@ while True:
         td50x.midi_stop(wait=True)
         print("done")
         quit(0)
+    if len(selection) == 0:
+        continue
     if selection[0] == 0:
         if len(selection) >= 2 and selection[1] <= 128 and selection[1] > 0:
             # Set Kit Number
             td50x.set_kit(selection[1])
         else:
             print("To select a kit, enter 0 followed by the kit number [1-128]")
+    if selection[0] == 1:
+        td50x.fetch_current_kit()

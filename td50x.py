@@ -16,6 +16,11 @@ from MidiConnection import MidiConnection
 
 class TD50X():
 
+    class Constants(Enum):
+        ROLAND_ID = 0x41
+        MODEL_ID = [0, 0, 0, 0, 7]
+
+
     class Status(Enum):
         UNKNOWN = 0
         NOTE_OFF = range(0x80, 0x90)
@@ -128,6 +133,7 @@ class TD50X():
 
     #Fetch and return the current kid on the TD-50X
     def fetch_current_kit(self):
+        msg = []
         pass
 
     def get_kit_id(self):
@@ -171,6 +177,48 @@ class TD50X():
             pass
         print("< " + TD50X.to_str(msg) + f"\t{timestamp}")
 
+    def prepare_sysex_msg(self, addr, size):
+        """add the status fields and checksum to the message"""
+        msg = TD50X.flatten(
+            TD50X.Status.SYSEX, 
+            TD50X.Constants.ROLAND_ID, 
+            self.device_id, 
+            TD50X.Constants.MODEL_ID, 
+            TD50X.Command.RQ1
+        )
+        payload = []
+        payload.extend(TD50X.pack4(addr))
+        payload.extend(TD50X.pack4(size))
+        msg.extend(payload)
+        msg.append(TD50X.checksum(payload))
+        msg.append(TD50X.Status.EOX)
+        return msg
+    
+    @staticmethod
+    def flatten(*args):
+        out = []
+        for a in args:
+            if isinstance(a, list):
+                out.extend(a)
+            else:
+                out.append(a)
+        return out
+
+    @staticmethod
+    def pack4(n):
+        out = []
+        for i in range(4):
+            out.append((n >> 21) & 0x7f)
+            n <<= 7
+        return out
+
+    @staticmethod
+    def checksum(arr):
+        sum = 0
+        for b in arr:
+            sum += b
+        return 128 - (sum % 128)
+    
     @staticmethod
     def to_str(msg):
         #Get Parse Status Byte
