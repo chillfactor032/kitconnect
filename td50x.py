@@ -140,7 +140,8 @@ class TD50X():
 
     def refresh_current_kit_id(self):
         addr = [0x00, 0x00, 0x00, 0x00]
-        msg = self.prepare_sysex_msg(addr, 1)
+        size = [0x00, 0x00, 0x00, 0x01]
+        msg = self.prepare_sysex_msg(addr, size)
         self.send_msg(msg)
 
     def get_kit_id(self):
@@ -201,8 +202,8 @@ class TD50X():
             TD50X.Command.RQ1
         )
         payload = []
-        payload.extend(TD50X.pack4(addr))
-        payload.extend(TD50X.pack4(size))
+        payload.extend(addr)
+        payload.extend(size)
         msg.extend(payload)
         msg.append(TD50X.checksum(payload))
         msg.append(TD50X.Status.EOX)
