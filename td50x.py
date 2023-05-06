@@ -77,7 +77,7 @@ class TD50X():
     class NoteNumbers(Enum):
         KICK = 36
         SNARE_HEAD = 38
-        SNARERIM = 40
+        SNARE_RIM = 40
         SNARE_X_STICK = 37
         TOM_1 = 48
         TOM_1_RIM = 50
@@ -100,9 +100,9 @@ class TD50X():
         RIDE_EDGE = 59
         RIDE_BELL = 53
         AUX_1_HEAD = 27
-        AUX1_RIM = 28
+        AUX_1_RIM = 28
         AUX_2_HEAD = 29
-        AUX2_RIM = 30
+        AUX_2_RIM = 30
         AUX_3_HEAD = 31
         AUX3_RIM = 32
         AUX_4_HEAD = 33
@@ -133,8 +133,14 @@ class TD50X():
 
     #Fetch and return the current kid on the TD-50X
     def fetch_current_kit(self):
-        msg = []
+        """kit_addr = (4 << 21) + pending * (2 << 14)
+        msg = prepare_sysex_msg(kit_addr, 27)"""
         pass
+
+    def refresh_current_kit_id(self):
+        addr = [0x00, 0x00, 0x00, 0x00]
+        msg = self.prepare_sysex_msg(addr, 1)
+        self.send_msg(msg)
 
     def get_kit_id(self):
         return self.kit_obj["id"]
@@ -164,18 +170,25 @@ class TD50X():
 
     def recv_msg(self, msg, timestamp):
         if TD50X.Status.SYSEX == msg[0]:
-            pass
-        elif TD50X.Status.PROG_CHG == msg[0]:
-            pass
-        elif TD50X.Status.NOTE_ON == msg[0]:
-            pass
-        elif TD50X.Status.PROG_CHG == msg[0]:
-            pass
-        elif TD50X.Status.PROG_CHG == msg[0]:
-            pass
+            self.recv_sysex_msg(msg, timestamp)
         else:
-            pass
+            if TD50X.Status.PROG_CHG == msg[0]:
+                pass
+            elif TD50X.Status.NOTE_ON == msg[0]:
+                pass
+            elif TD50X.Status.PROG_CHG == msg[0]:
+                pass
+            elif TD50X.Status.PROG_CHG == msg[0]:
+                pass
+            else:
+                pass
         print("< " + TD50X.to_str(msg) + f"\t{timestamp}")
+
+    def recv_sysex_msg(self, msg, timestamp):
+        current_kit_addr = [0,0,0,0]
+        if current_kit_addr == msg[9:12]:
+            kit = msg[13]
+            print(f"Current Kit: {kit+1}")
 
     def prepare_sysex_msg(self, addr, size):
         """add the status fields and checksum to the message"""
