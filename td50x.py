@@ -188,8 +188,8 @@ class TD50X():
 
     def recv_sysex_msg(self, msg, timestamp):
         current_kit_addr = [0,0,0,0]
-        if current_kit_addr == msg[9:12]:
-            kit = msg[13]
+        if current_kit_addr == msg[9:13]:
+            kit = msg[-3]
             print(f"Current Kit: {kit+1}")
 
     def prepare_sysex_msg(self, addr, size):
