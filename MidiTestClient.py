@@ -97,4 +97,4 @@ while True:
         else:
             print("To select a kit, enter 0 followed by the kit number [1-128]")
     if selection[0] == 1:
-        td50x.fetch_current_kit()
+        td50x.refresh_current_kit_id()
