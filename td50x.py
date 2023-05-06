@@ -108,7 +108,7 @@ class TD50X():
         AUX_4_HEAD = 33
         AUX4_RIM = 34
 
-    def __init__(self, input_device_id, output_device_id, midi_channel=0x09):
+    def __init__(self, input_device_id, output_device_id, midi_channel=0x09, device_id=0x10):
         super(TD50X, self).__init__()
         self.kit_obj = {
             "id": -1,
@@ -118,6 +118,7 @@ class TD50X():
         self.midi_device_input_id = input_device_id
         self.midi_device_output_id = output_device_id
         self.midi_channel = midi_channel
+        self.device_id = device_id
         self.midi = MidiConnection(self.midi_device_input_id,self.midi_device_output_id,self.recv_msg)
 
     def midi_start(self, test=False):
