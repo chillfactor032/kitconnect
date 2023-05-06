@@ -16,7 +16,7 @@ from MidiConnection import MidiConnection
 
 class TD50X():
 
-    class Constants(Enum):
+    class Constants():
         ROLAND_ID = 0x41
         MODEL_ID = [0, 0, 0, 0, 7]
 
@@ -195,18 +195,18 @@ class TD50X():
     def prepare_sysex_msg(self, addr, size):
         """add the status fields and checksum to the message"""
         msg = TD50X.flatten(
-            TD50X.Status.SYSEX, 
+            TD50X.Status.SYSEX.value, 
             TD50X.Constants.ROLAND_ID, 
             self.device_id, 
             TD50X.Constants.MODEL_ID, 
-            TD50X.Command.RQ1
+            TD50X.Command.RQ1.value
         )
         payload = []
         payload.extend(addr)
         payload.extend(size)
         msg.extend(payload)
         msg.append(TD50X.checksum(payload))
-        msg.append(TD50X.Status.EOX)
+        msg.append(TD50X.Status.EOX.value)
         return msg
     
     @staticmethod
