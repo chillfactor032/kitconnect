@@ -134,9 +134,7 @@ class TD50X():
 
     #Fetch and return the current kid on the TD-50X
     def fetch_current_kit(self):
-        """kit_addr = (4 << 21) + pending * (2 << 14)
-        msg = prepare_sysex_msg(kit_addr, 27)"""
-        pass
+        self.refresh_current_kit_id()
 
     def refresh_current_kit_id(self):
         addr = [0x00, 0x00, 0x00, 0x00]
@@ -208,7 +206,7 @@ class TD50X():
         msg.append(TD50X.checksum(payload))
         msg.append(TD50X.Status.EOX.value)
         return msg
-    
+
     @staticmethod
     def flatten(*args):
         out = []
@@ -220,11 +218,30 @@ class TD50X():
         return out
 
     @staticmethod
+    def kit_id_to_addr(kit_id: int):
+        base = 4<<21
+        step = 2<<14
+        return TD50X.pack4(base + kit_id * step)
+
+    @staticmethod
+    def addr_to_kit_id(addr: list):
+        base = 4<<21
+        step = 2<<14
+        return int((TD50X.unpack4(addr) - base) / step)
+
+    @staticmethod
     def pack4(n):
         out = []
         for i in range(4):
             out.append((n >> 21) & 0x7f)
             n <<= 7
+        return out
+
+    @staticmethod
+    def unpack4(n: list):
+        out = 0
+        for x in range(len(n)):
+            out += n[x] << ((len(n)-1-x)*7)
         return out
 
     @staticmethod
@@ -296,3 +313,83 @@ class TD50X():
         for b in msg:
             sum += b
         return 128 - (sum % 128)
+    
+class MidiMessage():
+    def __init__(self, bytes_list):
+        self.msg = bytes_list
+        self.msg_type = MidiMessage.status()
+    
+    #Return the raw msg
+    def get_msg(self):
+        return self.msg
+
+    def to_str(self, human_readable=False, hex=False):
+        #Get Parse Status Byte
+        status = TD50X.Status.UNKNOWN
+        byte_list = self.msg.copy()
+        midi_channel = -1
+        if len(self.msg) < 4:
+            return ""
+        
+        # Classify the status byte
+        for status_enum in TD50X.Status:
+            if status_enum == self.msg[0]:
+                status = status_enum
+                byte_list[0] = status.name
+                break
+
+        #Based on status byte, parse the midi_channel
+        if type(status.value) == range:
+            midi_channel = TD50X.get_midi_channel(self.msg[0])
+            byte_list[0] += f"(midi_ch={midi_channel})"
+
+        if status in [TD50X.Status.NOTE_ON, TD50X.Status.NOTE_OFF, TD50X.Status.KEY_PRESSURE]:
+            
+            #Byte 2 is a note number, translate to drum
+            for note_num_enum in TD50X.NoteNumbers:
+                if note_num_enum.value == self.msg[1]:
+                    byte_list[1] = note_num_enum.name + f"({note_num_enum.value})"
+                    break
+        
+        if status in [TD50X.Status.NOTE_ON, TD50X.Status.NOTE_OFF]:
+            byte_list[2] = f"VELOCITY({self.msg[2]})"
+
+        if status == TD50X.Status.PROG_CHG:
+            #Byte 2 is a kit number
+            byte_list[1] = f"KIT({self.msg[1]+1})"
+
+        if status in TD50X.ControlChange:
+            # What kind of control change is it?
+            for ctrl__chg_enum in TD50X.ControlChange:
+                if ctrl__chg_enum == self.msg[1]:
+                    byte_list[1] = ctrl__chg_enum
+
+        return "["+ ",".join([str(x) for x in byte_list]) +"]"
+    
+    @staticmethod
+    def status(msg):
+        if len(msg) < 1:
+            return TD50X.Status.UNKNOWN
+        # Classify the status byte
+        for status_enum in TD50X.Status:
+            if status_enum == msg[0]:
+                return status_enum
+            
+class SysExMessage(MidiMessage):
+    """System Exclusive Message"""
+
+    def __init__(self, bytes_list):
+        super(MidiMessage, self).__init__(bytes_list)
+        self.msg = bytes_list
+
+    def get_addr_bytes(self):
+        return self.msg[9:13]
+    
+    def get_data(self):
+        return self.msg[13:-2]
+    
+    def get_addr_int(self):
+        return 
+    
+    def get_addr_int(self):
+        return

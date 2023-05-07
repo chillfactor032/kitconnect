@@ -91,7 +91,7 @@ while True:
     if len(selection) == 0:
         continue
     if selection[0] == 0:
-        if len(selection) >= 2 and selection[1] <= 128 and selection[1] > 0:
+        if len(selection) >= 2 and selection[1] <= 100 and selection[1] > 0:
             # Set Kit Number
             td50x.set_kit(selection[1])
         else:
