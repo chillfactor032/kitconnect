@@ -4,15 +4,18 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 #Python Imports
 from threading import Thread
-from mido.ports import BaseIOPort
 import mido
+from mido.ports import BaseIOPort
 import time
 import random
+
+mido.set_backend('mido.backends.pygame')
 
 class MidiConnection(Thread):
 
     def __init__(self, io_port_name, recv_msg_callback=None):
         super(MidiConnection, self).__init__()
+        
         self.io_port_name = io_port_name
         self.port = None
         self.recv_msg_callback = recv_msg_callback
@@ -24,13 +27,16 @@ class MidiConnection(Thread):
         self.port.send(msg)
 
     def run(self):
-        mido.set_backend('mido.backends.pygame')
+        
         if self.io_port_name == "TestPort":
-            self.port = TestPort(callback=self.recv_msg_callback)
+            self.port = TestPort()
         else:
-            self.port = mido.open_ioport(self.io_port_name, callback=self.recv_msg_callback)
+            self.port = mido.open_ioport(self.io_port_name)
         while not self.stopped:
             time.sleep(0.001)
+            msg = self.port.poll()
+            if msg:
+                self.recv_msg_callback(msg)
         self.port.close()
 
     def stop(self):
@@ -49,8 +55,9 @@ class TestPort(BaseIOPort):
         self.name = "Test Port"
         self.closed = False
         self.callback = callback
-        self.callback_thread = Thread(target=self.callback_monitor)
-        self.callback_thread.start()
+        if callback:
+            self.callback_thread = Thread(target=self.callback_monitor)
+            self.callback_thread.start()
 
     def random_msg(self):
         msgs = [

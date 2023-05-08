@@ -90,13 +90,8 @@ while True:
     if selection[0] == 0:
         if len(selection) >= 2 and selection[1] <= 100 and selection[1] > 0:
             # Set Kit Number
-            msg = mido.Message("program_change", program=selection[1])
-            print(f"> [{msg}]")
-            td50x.send_msg(msg)
+            td50x.set_kit(selection[1])
         else:
             print("To select a kit, enter 0 followed by the kit number [1-128]")
     if selection[0] == 1:
-        []
-        msg = mido.Message.from_bytes(TD50X.prepare_sysex_msg2([0,0,0,0],[0,0,0,1]))
-        print(f"> [{msg}]")
-        td50x.send_msg(msg)
+        td50x.refresh_current_kit()
