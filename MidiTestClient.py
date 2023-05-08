@@ -5,6 +5,7 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 from td50x import TD50X
 import sys
 import random
+import mido
 
 #Some Test Msgs
 test_msgs = [
@@ -35,9 +36,8 @@ def quit(code):
     print(f"Exit Code:{code}")
     sys.exit(code)
 
-def recv(msg, timestamp):
-    msg = TD50X.to_str(msg)
-    print("< "+ msg + f" {timestamp}")
+def recv(msg):
+    print(f"< [{msg}]")
 
 #Get Midi Devices
 devices = TD50X.get_midi_devices()
@@ -46,7 +46,7 @@ devices = TD50X.get_midi_devices()
 while device is None:
     #Get Devices
     for x in range(len(devices)):
-        print(f"[{x}] {devices[x]['desc']}")
+        print(f"[{x}] {devices[x]}")
 
     #print options
     try:
@@ -58,13 +58,11 @@ while device is None:
     except KeyboardInterrupt as ke:
         print("\nKeyboard Interrupt. Goodbye.")
         quit(0)
-    print(f"You selected [{selection}] {devices[selection]['name']}\n")
+    print(f"You selected [{selection}] {devices[selection]}\n")
     device = devices[selection]
 
 #Create MidiConnection
-td50x = TD50X(device["input_id"],device["output_id"])
-#td50x.midi.test_msgs = test_msgs
-#td50x.midi_start(test=True)
+td50x = TD50X(devices[selection])
 td50x.midi_start()
 
 #Send / Recv Midi Packets
@@ -85,16 +83,20 @@ while True:
     except KeyboardInterrupt as ke:
         print("\nKeyboard Interrupt.")
         print("Waiting for MidiConnection to stop...", end="")
-        td50x.midi_stop(wait=True)
-        print("done")
+        td50x.midi_stop()
         quit(0)
     if len(selection) == 0:
         continue
     if selection[0] == 0:
-        if len(selection) >= 2 and selection[1] <= 128 and selection[1] > 0:
+        if len(selection) >= 2 and selection[1] <= 100 and selection[1] > 0:
             # Set Kit Number
-            td50x.set_kit(selection[1])
+            msg = mido.Message("program_change", program=selection[1])
+            print(f"> [{msg}]")
+            td50x.send_msg(msg)
         else:
             print("To select a kit, enter 0 followed by the kit number [1-128]")
     if selection[0] == 1:
-        td50x.refresh_current_kit_id()
+        []
+        msg = mido.Message.from_bytes(TD50X.prepare_sysex_msg2([0,0,0,0],[0,0,0,1]))
+        print(f"> [{msg}]")
+        td50x.send_msg(msg)
