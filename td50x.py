@@ -152,7 +152,7 @@ class TD50X():
                 return
             kit_id = kit_num - 1 
         kit_id = (relative+kit_id) % 128
-        self.send_msg(mido.Message("program_change", program=kit_id))
+        self.send_msg(mido.Message("program_change", channel=self.midi_channel, program=kit_id))
         self.refresh_current_kit(kit_id)
 
     

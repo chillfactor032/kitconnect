@@ -36,9 +36,6 @@ def quit(code):
     print(f"Exit Code:{code}")
     sys.exit(code)
 
-def recv(msg):
-    print(f"< [{msg}]")
-
 #Get Midi Devices
 devices = TD50X.get_midi_devices()
 
@@ -92,6 +89,6 @@ while True:
             # Set Kit Number
             td50x.set_kit(selection[1])
         else:
-            print("To select a kit, enter 0 followed by the kit number [1-128]")
+            print("To select a kit, enter 0 followed by the kit number [1-100]")
     if selection[0] == 1:
         td50x.refresh_current_kit()
