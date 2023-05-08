@@ -6,7 +6,7 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import sys
 import os
 import time
-import pygame.midi
+import mido
 from enum import Enum
 
 #PySide6 Imports
@@ -108,87 +108,72 @@ class TD50X():
         AUX_4_HEAD = 33
         AUX4_RIM = 34
 
-    def __init__(self, input_device_id, output_device_id, midi_channel=0x09, device_id=0x10):
+    def __init__(self, port_name, midi_channel=0x09, device_id=0x10):
         super(TD50X, self).__init__()
-        self.kit_obj = {
-            "id": -1,
-            "name": "",
-            "subname": ""
-        }
-        self.midi_device_input_id = input_device_id
-        self.midi_device_output_id = output_device_id
-        self.midi_channel = midi_channel
+        self.kit_id = 0
+        self.kit_name = "Not Set"
+        self.kit_subname = ""
+        self.port_name = port_name
         self.device_id = device_id
-        self.midi = MidiConnection(self.midi_device_input_id,self.midi_device_output_id,self.recv_msg)
+        self.midi_channel = midi_channel
+        self.midi = MidiConnection(self.port_name,self.recv_msg)
+
+    def set_device_id(self, device_id):
+        self.device_id = device_id
 
     def midi_start(self, test=False):
-        if test:
-            self.midi.start_test()
-        else:
-            self.midi.start()
+        self.midi.start()
 
     def midi_stop(self, wait=True):
         self.midi.stop()
-        if wait:
-            self.midi.wait()
+        self.midi.join()
 
-    #Fetch and return the current kid on the TD-50X
-    def fetch_current_kit(self):
-        self.refresh_current_kit_id()
+    def refresh_current_kit(self, kit_id=None):
+        if not kit_id:
+            kit_id = self.kit_id
 
-    def refresh_current_kit_id(self):
-        addr = [0x00, 0x00, 0x00, 0x00]
-        size = [0x00, 0x00, 0x00, 0x01]
-        msg = self.prepare_sysex_msg(addr, size)
-        self.send_msg(msg)
-
-    def get_kit_id(self):
-        return self.kit_obj["id"]
-    
-    def get_kit_name(self):
-        return self.kit_obj["name"]
-    
-    def get_kit_subname(self):
-        return self.kit_obj["subname"]
-    
     # Set the kit to kit number
     # Kit Number is 1-128, not the 0 based kit Id
     def set_kit(self, kit_num=None, relative=0):
         if kit_num is None and relative == 0:
             return
         if kit_num is None:
-            kit_id = self.kit_obj["id"]
+            kit_id = self.kit_id
         else:
-            if kit_num < 1 or kit_num > 128:
+            if kit_num < 1 or kit_num > 100:
                 return
             kit_id = kit_num - 1 
         kit_id = (relative+kit_id) % 128
-        self.midi.send_msg([TD50X.Status.PROG_CHG.base()+self.midi_channel, kit_id, 0x00, 0x7F])
+        self.midi.send_msg(self.midi.Message("program_change", program=kit_id))
+        self.refresh_current_kit(kit_id)
+
     
     def send_msg(self, msg):
         self.midi.send_msg(msg)
 
-    def recv_msg(self, msg, timestamp):
-        if TD50X.Status.SYSEX == msg[0]:
-            self.recv_sysex_msg(msg, timestamp)
-        else:
-            if TD50X.Status.PROG_CHG == msg[0]:
-                pass
-            elif TD50X.Status.NOTE_ON == msg[0]:
-                pass
-            elif TD50X.Status.PROG_CHG == msg[0]:
-                pass
-            elif TD50X.Status.PROG_CHG == msg[0]:
-                pass
-            else:
-                pass
-        print("< " + TD50X.to_str(msg) + f"\t{timestamp}")
+    def recv_msg(self, msg):
+        if msg.type == "sysex":
+            self.recv_sysex_msg(msg)
+        if msg.type == "program_change":
+            #Kit has been changed, send kit refresh msg
+            self.refresh_current_kit(msg.program)
+        print(f"< [{msg}]")
 
-    def recv_sysex_msg(self, msg, timestamp):
-        current_kit_addr = [0,0,0,0]
-        if current_kit_addr == msg[9:13]:
-            kit = msg[-3]
-            print(f"Current Kit: {kit+1}")
+    def recv_sysex_msg(self, msg):
+        cmd = msg.data[7]
+        addr = TD50X.unpack(msg.data[8:12])
+        if cmd == TD50X.Command.DT1 and addr == 0:
+            # Current Kit Query
+            kit_id = msg.data[-2]
+            #Update Get Kit Name too
+            new_msg = self.prepare_sysex_msg(TD50X.kit_id_to_addr(kit_id, [0, 0, 0, 28]))
+            self.send_msg(new_msg)
+        elif cmd == TD50X.Command.DT1 and addr > self.unpack([4,0,0,0]) and addr <= self.unpack([5,0x46,0,0]):
+            #Kit Name Query
+            self.kit_id = self.addr_to_kit_id(addr)
+            self.kit_name = TD50X.list_to_ascii(msg.data[12:25])
+            self.kit_subname = TD50X.list_to_ascii(msg.data[25:-2])
+            print(f"Current Kit Updated: {self.kit_id+1} - {self.kit_name} - {self.kit_subname}")
 
     def prepare_sysex_msg(self, addr, size):
         """add the status fields and checksum to the message"""
@@ -207,6 +192,31 @@ class TD50X():
         msg.append(TD50X.Status.EOX.value)
         return msg
 
+    @staticmethod
+    def prepare_sysex_msg2(addr, size):
+        """add the status fields and checksum to the message"""
+        msg = TD50X.flatten(
+            TD50X.Status.SYSEX.value, 
+            TD50X.Constants.ROLAND_ID, 
+            0x10, 
+            TD50X.Constants.MODEL_ID, 
+            TD50X.Command.RQ1.value
+        )
+        payload = []
+        payload.extend(addr)
+        payload.extend(size)
+        msg.extend(payload)
+        msg.append(TD50X.checksum(payload))
+        msg.append(TD50X.Status.EOX.value)
+        return msg
+    
+    @staticmethod
+    def list_to_ascii(lst):
+        text = ""
+        for char in lst:
+            text += chr(char)
+        return text
+    
     @staticmethod
     def flatten(*args):
         out = []
@@ -227,7 +237,7 @@ class TD50X():
     def addr_to_kit_id(addr: list):
         base = 4<<21
         step = 2<<14
-        return int((TD50X.unpack4(addr) - base) / step)
+        return int((TD50X.unpack(addr) - base) / step)
 
     @staticmethod
     def pack4(n):
@@ -238,10 +248,10 @@ class TD50X():
         return out
 
     @staticmethod
-    def unpack4(n: list):
+    def unpack(arr: list) -> int:
         out = 0
-        for x in range(len(n)):
-            out += n[x] << ((len(n)-1-x)*7)
+        for x in arr:
+            out = (out << 7) + x
         return out
 
     @staticmethod
@@ -390,6 +400,3 @@ class SysExMessage(MidiMessage):
     
     def get_addr_int(self):
         return 
-    
-    def get_addr_int(self):
-        return
