@@ -63,7 +63,8 @@ class TestPort(BaseIOPort):
         msgs = [
             mido.Message("note_on", note=60),
             mido.Message("program_change", program=67),
-            mido.Message("note_off", note=60)
+            mido.Message("note_off", note=60),
+            mido.Message('sysex', data=[65,16,0,0,0,0,7,18,4,36,0,0,65,105,114,70,114,111,109,26,65,115,105,97,84,97,98,108,97,32,32,32,32,32,32,32,32,32,32,32,76])
         ]   
         return random.choice(msgs)
     
@@ -86,10 +87,10 @@ class TestPort(BaseIOPort):
     def _send(self, msg):
         print(f"TestPort Recv: [{msg}]")
 
-    def _receive(self, block=True):
-        time.sleep(random.random()*3)
+    def _receive(self, block=False):
         msg = self.random_msg()
         print(f"TestPort Send: [{msg}]")
-        return None
+        time.sleep(random.random()*3)
+        return msg
 
     

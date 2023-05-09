@@ -154,7 +154,6 @@ class TD50X():
         kit_id = (relative+kit_id) % 128
         self.send_msg(mido.Message("program_change", channel=self.midi_channel, program=kit_id))
         self.refresh_current_kit(kit_id)
-
     
     def send_msg(self, msg):
         self.midi.send_msg(msg)
@@ -166,20 +165,23 @@ class TD50X():
         if msg.type == "program_change":
             #Kit has been changed, send kit refresh msg
             self.refresh_current_kit(msg.program)
+        if msg.type == "note_on":
+            pass
         print(f"< [{msg}]")
 
     def recv_sysex_msg(self, msg):
         cmd = msg.data[7]
         addr = TD50X.unpack(msg.data[8:12])
-        if cmd == TD50X.Command.DT1 and addr == 0:
+        left = self.unpack([4,0,0,0])
+        right = self.unpack([5,0x46,0,0])
+        if cmd == TD50X.Command.DT1.value and addr == 0:
             # Current Kit Query
             kit_id = msg.data[-2]
             #Update Get Kit Name too
-            new_msg = self.prepare_sysex_msg(TD50X.kit_id_to_addr(kit_id, [0, 0, 0, 28]))
-            self.send_msg(new_msg)
-        elif cmd == TD50X.Command.DT1 and addr > self.unpack([4,0,0,0]) and addr <= self.unpack([5,0x46,0,0]):
+            self.refresh_current_kit(kit_id)
+        elif cmd == TD50X.Command.DT1.value and addr >= self.unpack([4,0,0,0]) and addr <= self.unpack([5,0x46,0,0]):
             #Kit Name Query
-            self.kit_id = self.addr_to_kit_id(addr)
+            self.kit_id = self.addr_to_kit_id(msg.data[8:12])
             self.kit_name = TD50X.list_to_ascii(msg.data[12:25])
             self.kit_subname = TD50X.list_to_ascii(msg.data[25:-2])
             print(f"Current Kit Updated: {self.kit_id+1} - {self.kit_name} - {self.kit_subname}")

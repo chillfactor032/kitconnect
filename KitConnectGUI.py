@@ -17,17 +17,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def __init__(self):
         super(MainWindow, self).__init__()
-        #Load UI Components
+
+        # Load UI Components
         self.setupUi(self)
         
-        #App Constants
+        # App Variables
         self.geometryToRestore = None
         self.repoUrl = QUrl("https://github.com/chillfactor032/kitconnect")
         self.midi_devices = []
         self.showDebug = True
         self.showError = True
         self.current_kit_id = 100
-        #Read Version File From Resources
+
+        # Read Version File From Resources
         version_file = QFile(":version.json")
         version_file.open(QFile.ReadOnly)
         text_stream = QTextStream(version_file)
@@ -41,14 +43,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.project_name = self.app_name.title().replace(" ", "")
         self.setWindowTitle(f"{self.app_name} {self.version}")
         
-        #Load Settings
+        # Load Settings
         self.config_dir = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation)
         if(not os.path.isdir(self.config_dir)):
             os.mkdir(self.config_dir)
         self.ini_path = os.path.join(self.config_dir, f"kitconnectgui.ini").replace("\\", "/")
         self.settings = QSettings(self.ini_path, QSettings.IniFormat)
 
-        # Button/Menu Signals Go Here
+        # Button/Menu Signals
         self.closeButton.clicked.connect(self.closeButtonClicked)
         self.minimizeButton.clicked.connect(self.minimizedButtonClicked)
         self.maximizeButton.clicked.connect(self.maximizedButtonClicked)
@@ -63,27 +65,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.kitLeftButton.clicked.connect(self.selectNextKitLeft)
         self.getCurKitButton.clicked.connect(self.refreshKit)
 
-        #TD-50X Object
+        # TD-50X Object
         self.td50x = TD50X()
         self.td50x.signals.log.connect(self.log)
         self.td50x.signals.midi_msg.connect(self.log_midi)
 
-        ## ThreadPool
+        # ThreadPool
         self.threadpool = QThreadPool()
 
-        #Finally, Show the UI
+        # Finally, Show the UI
         self.stackedWidget.setCurrentWidget(self.kitsWidget)
-
         geometry = self.settings.value(f"{self.project_name}/geometry")
         window_state = self.settings.value(f"{self.project_name}/windowState")
         if(geometry and window_state):
             self.restoreGeometry(geometry) 
             self.restoreState(window_state)
         self.setWindowFlags(Qt.FramelessWindowHint)
-
-        #start thread
-        self.threadpool.start(self.td50x)
-
         self.show()
         self.log("KitConnect started")
 
