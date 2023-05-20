@@ -10,11 +10,17 @@ import mido
 from enum import Enum
 
 #PySide6 Imports
-from PySide6.QtCore import QRunnable, Signal, Slot, QObject
+from PySide6.QtCore import Signal, QObject
 
 from MidiConnection import MidiConnection
 
 class TD50X():
+
+    class Signals(QObject):
+        midi_recv = Signal(mido.Message)
+        midi_send = Signal(mido.Message)
+        #Kit Change Event: kit num, kit name, kit subname
+        kit_chg = Signal(int, str, str) 
 
     class Constants():
         ROLAND_ID = 0x41
@@ -110,6 +116,7 @@ class TD50X():
 
     def __init__(self, port_name, midi_channel=0x09, device_id=0x10):
         super(TD50X, self).__init__()
+        self.signals = self.Signals()
         self.kit_id = 0
         self.kit_name = "Not Set"
         self.kit_subname = ""
@@ -121,7 +128,7 @@ class TD50X():
     def set_device_id(self, device_id):
         self.device_id = device_id
 
-    def midi_start(self, test=False):
+    def midi_start(self):
         self.midi.start()
 
     def midi_stop(self, wait=True):
@@ -157,9 +164,11 @@ class TD50X():
     
     def send_msg(self, msg):
         self.midi.send_msg(msg)
+        self.signals.midi_send.emit(msg)
         print(f"> [{msg}]")
 
     def recv_msg(self, msg):
+        self.signals.midi_recv.emit(msg)
         if msg.type == "sysex":
             self.recv_sysex_msg(msg)
         if msg.type == "program_change":
@@ -182,9 +191,9 @@ class TD50X():
         elif cmd == TD50X.Command.DT1.value and addr >= self.unpack([4,0,0,0]) and addr <= self.unpack([5,0x46,0,0]):
             #Kit Name Query
             self.kit_id = self.addr_to_kit_id(msg.data[8:12])
-            self.kit_name = TD50X.list_to_ascii(msg.data[12:25])
-            self.kit_subname = TD50X.list_to_ascii(msg.data[25:-2])
-            print(f"Current Kit Updated: {self.kit_id+1} - {self.kit_name} - {self.kit_subname}")
+            self.kit_name = TD50X.list_to_ascii(msg.data[12:24]).rstrip()
+            self.kit_subname = TD50X.list_to_ascii(msg.data[24:-2]).rstrip()
+            self.signals.kit_chg.emit(self.kit_id+1, self.kit_name, self.kit_subname)
 
     def prepare_sysex_msg(self, addr, size):
         """add the status fields and checksum to the message"""
@@ -225,7 +234,11 @@ class TD50X():
     def list_to_ascii(lst):
         text = ""
         for char in lst:
-            text += chr(char)
+            # Convert non-printable ASCII to Space
+            if char < 32 or char >= 127:
+                text += " "
+            else:
+                text += chr(char)
         return text
     
     @staticmethod
@@ -274,47 +287,29 @@ class TD50X():
     
     @staticmethod
     def to_str(msg):
-        #Get Parse Status Byte
-        status = TD50X.Status.UNKNOWN
-        byte_list = msg.copy()
-        midi_channel = -1
-        if len(msg) < 4:
-            return ""
-        
-        # Classify the status byte
-        for status_enum in TD50X.Status:
-            if status_enum == msg[0]:
-                status = status_enum
-                byte_list[0] = status.name
-                break
-
-        #Based on status byte, parse the midi_channel
-        if type(status.value) == range:
-            midi_channel = TD50X.get_midi_channel(msg[0])
-            byte_list[0] += f"(midi_ch={midi_channel})"
-
-        if status in [TD50X.Status.NOTE_ON, TD50X.Status.NOTE_OFF, TD50X.Status.KEY_PRESSURE]:
-            
-            #Byte 2 is a note number, translate to drum
-            for note_num_enum in TD50X.NoteNumbers:
-                if note_num_enum.value == msg[1]:
-                    byte_list[1] = note_num_enum.name + f"({note_num_enum.value})"
+        dict_obj = msg.dict()
+        print(dict_obj)
+        if "note" in dict_obj.keys():
+            for note in TD50X.NoteNumbers:
+                if note.value == dict_obj["note"]:
+                    dict_obj["note"] = note.name
                     break
-        
-        if status in [TD50X.Status.NOTE_ON, TD50X.Status.NOTE_OFF]:
-            byte_list[2] = f"VELOCITY({msg[2]})"
-
-        if status == TD50X.Status.PROG_CHG:
-            #Byte 2 is a kit number
-            byte_list[1] = f"KIT({msg[1]+1})"
-
-        if status in TD50X.ControlChange:
-            # What kind of control change is it?
-            for ctrl__chg_enum in TD50X.ControlChange:
-                if ctrl__chg_enum == msg[1]:
-                    byte_list[1] = ctrl__chg_enum
-
-        return "["+ ",".join([str(x) for x in byte_list]) +"]"
+        if "control" in dict_obj.keys():
+            for cc in TD50X.ControlChange:
+                if cc.value == dict_obj["control"]:
+                    dict_obj["control"] = cc.name
+                    break
+        # Note On / Off show the note number (drum) + velocity
+        if dict_obj["type"] == "note_on" or dict_obj["type"] == "note_off":
+            return f"[{dict_obj['type']} channel={dict_obj['channel']} note={dict_obj['note']} velocity={dict_obj['velocity']}]"
+        elif dict_obj["type"] == "control_change":
+            return f"[{dict_obj['type']} channel={dict_obj['channel']} note={dict_obj['control']} value={dict_obj['value']}]"
+        elif dict_obj["type"] == "polytouch":
+            return f"[{dict_obj['type']} channel={dict_obj['channel']} note={dict_obj['control']} value={dict_obj['value']}]"
+        elif dict_obj["type"] == "sysex":
+            hex_data = msg.hex()
+            return f"[{dict_obj['type']} data={hex_data}]"
+        return f"[{msg}]"
 
     @staticmethod
     def get_midi_devices():

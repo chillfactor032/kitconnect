@@ -17,5 +17,6 @@
     <file>resources/img/icons/refresh-cw.svg</file>
     <file>resources/img/icons/arrow-left.svg</file>
     <file>resources/img/icons/arrow-right.svg</file>
+    <file>resources/img/icons/settings.svg</file>
 </qresource>
 </RCC>
