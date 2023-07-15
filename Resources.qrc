@@ -18,5 +18,7 @@
     <file>resources/img/icons/arrow-left.svg</file>
     <file>resources/img/icons/arrow-right.svg</file>
     <file>resources/img/icons/settings.svg</file>
+    <file>resources/img/icons/drum.ico</file>
+    <file>resources/img/icons/drum.png</file>
 </qresource>
 </RCC>

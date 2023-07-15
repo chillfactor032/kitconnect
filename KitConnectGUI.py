@@ -122,6 +122,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # ThreadPool
         self.threadpool = QThreadPool()
 
+        #Set window Icon
+        default_icon_pixmap = QStyle.StandardPixmap.SP_FileDialogListView
+        icon_pixmap = QPixmap(":resources/img/icons/drum.ico")
+        pc_icon = QIcon(icon_pixmap)
+        default_icon = self.style().standardIcon(default_icon_pixmap)
+        if(pc_icon):
+            self.setWindowIcon(pc_icon)
+        else:
+            self.setWindowIcon(default_icon)
+
         # Finally, Show the UI
         self.log("KitConnect started")
         self.stackedWidget.setCurrentWidget(self.kitsWidget)
