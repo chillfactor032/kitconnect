@@ -186,20 +186,8 @@ if(partial):
 print("Compiling Binary")
 
 if(target_env == "windows"):
-    show_cmd = "--windows-disable-console "
-    if(TEST_BUILD):
-        show_cmd = ""
-    
-    icon = f"--windows-icon-from-ico={version['ico']}"
-    if not os.path.exists(version['ico']):
-        icon = ""
-    
-    cmd = f"py -m nuitka --onefile --standalone" \
-            f" --enable-plugin=pyside6 " \
-            f"{icon}" \
-            f" {show_cmd}" \
-            f" -o bin/{OUTPUT_FILE}" \
-            " MainWindow.py"
+    cmd = f"pyinstaller --onefile --windowed --name=KitConnect --icon={version['ico']} KitConnectGUI.py"
+    print(cmd)
     
 proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 for c in iter(lambda: proc.stdout.read(1), b''):
@@ -213,7 +201,7 @@ proc.communicate()
 print("\n=============================================")
 if(proc.returncode == 0):
     print("Binary Compiled Successfully")
-    print(f"./bin/{OUTPUT_FILE}")
 else:
     print("Error Compiling Binary")
 print("=============================================\n")
+

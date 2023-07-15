@@ -7,6 +7,7 @@ import sys
 import os
 import time
 import mido
+import mido.backends.pygame
 from enum import Enum
 
 #PySide6 Imports
