@@ -53,7 +53,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.config_dir = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation)
         self.documents = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
         if(not os.path.isdir(self.config_dir)):
-            os.mkdir(self.config_dir)
+            os.makedirs(self.config_dir)
         self.ini_path = os.path.join(self.config_dir, f"kitconnectgui.ini").replace("\\", "/")
         self.settings = QSettings(self.ini_path, QSettings.IniFormat)
 
