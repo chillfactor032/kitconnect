@@ -1,0 +1,502 @@
+[
+    {
+      "kit_num": 1,
+      "name": "Acoustic 1",
+      "subname": ""
+    },
+    {
+      "kit_num": 2,
+      "name": "Pure Wood",
+      "subname": ""
+    },
+    {
+      "kit_num": 3,
+      "name": "Big & Fat",
+      "subname": ""
+    },
+    {
+      "kit_num": 4,
+      "name": "Modern Jazz",
+      "subname": ""
+    },
+    {
+      "kit_num": 5,
+      "name": "Funk Tight",
+      "subname": ""
+    },
+    {
+      "kit_num": 6,
+      "name": "Metal Dream",
+      "subname": ""
+    },
+    {
+      "kit_num": 7,
+      "name": "Skylight",
+      "subname": ""
+    },
+    {
+      "kit_num": 8,
+      "name": "Big Bluezer",
+      "subname": ""
+    },
+    {
+      "kit_num": 9,
+      "name": "Piccolo Snap",
+      "subname": ""
+    },
+    {
+      "kit_num": 10,
+      "name": "Hard Rock",
+      "subname": ""
+    },
+    {
+      "kit_num": 11,
+      "name": "Superb Room",
+      "subname": ""
+    },
+    {
+      "kit_num": 12,
+      "name": "Jizz Gig",
+      "subname": ""
+    },
+    {
+      "kit_num": 13,
+      "name": "Loud Rock",
+      "subname": ""
+    },
+    {
+      "kit_num": 14,
+      "name": "Fat Brass",
+      "subname": ""
+    },
+    {
+      "kit_num": 15,
+      "name": "Juzz Fusion",
+      "subname": ""
+    },
+    {
+      "kit_num": 16,
+      "name": "The Bronze",
+      "subname": ""
+    },
+    {
+      "kit_num": 17,
+      "name": "Organic DnB",
+      "subname": ""
+    },
+    {
+      "kit_num": 18,
+      "name": "R&B Ballad",
+      "subname": ""
+    },
+    {
+      "kit_num": 19,
+      "name": "Air From Asia",
+      "subname": ""
+    },
+    {
+      "kit_num": 20,
+      "name": "COmpreSS",
+      "subname": ""
+    },
+    {
+      "kit_num": 21,
+      "name": "Warm Studio",
+      "subname": ""
+    },
+    {
+      "kit_num": 22,
+      "name": "EDM BigRoomz",
+      "subname": ""
+    },
+    {
+      "kit_num": 23,
+      "name": "AcrylPanache",
+      "subname": ""
+    },
+    {
+      "kit_num": 24,
+      "name": "Jazz Machine",
+      "subname": ""
+    },
+    {
+      "kit_num": 25,
+      "name": "Blast Metal",
+      "subname": ""
+    },
+    {
+      "kit_num": 26,
+      "name": "Progressive",
+      "subname": ""
+    },
+    {
+      "kit_num": 27,
+      "name": "Stadium Rock",
+      "subname": ""
+    },
+    {
+      "kit_num": 28,
+      "name": "Dark N' Open",
+      "subname": ""
+    },
+    {
+      "kit_num": 29,
+      "name": "Poppin' Walnut",
+      "subname": ""
+    },
+    {
+      "kit_num": 30,
+      "name": "Speed Metal",
+      "subname": ""
+    },
+    {
+      "kit_num": 31,
+      "name": "Heavy Metal",
+      "subname": ""
+    },
+    {
+      "kit_num": 32,
+      "name": "Jazz Funk",
+      "subname": ""
+    },
+    {
+      "kit_num": 33,
+      "name": "Swing Jazz",
+      "subname": ""
+    },
+    {
+      "kit_num": 34,
+      "name": "Hard Prog",
+      "subname": ""
+    },
+    {
+      "kit_num": 35,
+      "name": "70s Muffled",
+      "subname": ""
+    },
+    {
+      "kit_num": 36,
+      "name": "Electro DnB",
+      "subname": ""
+    },
+    {
+      "kit_num": 37,
+      "name": "Hip Hopper",
+      "subname": ""
+    },
+    {
+      "kit_num": 38,
+      "name": "TecknoFC",
+      "subname": ""
+    },
+    {
+      "kit_num": 39,
+      "name": "Orchestra",
+      "subname": ""
+    },
+    {
+      "kit_num": 40,
+      "name": "Back in 80s",
+      "subname": ""
+    },
+    {
+      "kit_num": 41,
+      "name": "Rock Maple",
+      "subname": ""
+    },
+    {
+      "kit_num": 42,
+      "name": "Soft n Open",
+      "subname": ""
+    },
+    {
+      "kit_num": 43,
+      "name": "Euro Studio",
+      "subname": ""
+    },
+    {
+      "kit_num": 44,
+      "name": "Wood Grain",
+      "subname": ""
+    },
+    {
+      "kit_num": 45,
+      "name": "Vintage Swing",
+      "subname": ""
+    },
+    {
+      "kit_num": 46,
+      "name": "Chop Pop",
+      "subname": ""
+    },
+    {
+      "kit_num": 47,
+      "name": "Dark Room",
+      "subname": ""
+    },
+    {
+      "kit_num": 48,
+      "name": "Sharpe Popper",
+      "subname": ""
+    },
+    {
+      "kit_num": 49,
+      "name": "Back Streek",
+      "subname": ""
+    },
+    {
+      "kit_num": 50,
+      "name": "Acid",
+      "subname": ""
+    },
+    {
+      "kit_num": 51,
+      "name": "Perc Tribe",
+      "subname": ""
+    },
+    {
+      "kit_num": 52,
+      "name": "Vintage Rock",
+      "subname": ""
+    },
+    {
+      "kit_num": 53,
+      "name": "Frged Wood",
+      "subname": ""
+    },
+    {
+      "kit_num": 54,
+      "name": "Metalurgist",
+      "subname": ""
+    },
+    {
+      "kit_num": 55,
+      "name": "Jazz Breaks",
+      "subname": ""
+    },
+    {
+      "kit_num": 56,
+      "name": "Snare Galore",
+      "subname": ""
+    },
+    {
+      "kit_num": 57,
+      "name": "Hybrid field K&S",
+      "subname": ""
+    },
+    {
+      "kit_num": 58,
+      "name": "EDM DrumStep",
+      "subname": ""
+    },
+    {
+      "kit_num": 59,
+      "name": "Evo TR",
+      "subname": ""
+    },
+    {
+      "kit_num": 60,
+      "name": "Moon Walk",
+      "subname": ""
+    },
+    {
+      "kit_num": 61,
+      "name": "Roots Reggae",
+      "subname": ""
+    },
+    {
+      "kit_num": 62,
+      "name": "Space Disco",
+      "subname": ""
+    },
+    {
+      "kit_num": 63,
+      "name": "Acoustic TR",
+      "subname": ""
+    },
+    {
+      "kit_num": 64,
+      "name": "Fat 808",
+      "subname": ""
+    },
+    {
+      "kit_num": 65,
+      "name": "Hybrid=909",
+      "subname": ""
+    },
+    {
+      "kit_num": 66,
+      "name": "Plugs & Layers",
+      "subname": ""
+    },
+    {
+      "kit_num": 67,
+      "name": "Trash Noiser",
+      "subname": ""
+    },
+    {
+      "kit_num": 68,
+      "name": "Ana Hybrid",
+      "subname": ""
+    },
+    {
+      "kit_num": 69,
+      "name": "Unplugged",
+      "subname": ""
+    },
+    {
+      "kit_num": 70,
+      "name": "LatinPerc",
+      "subname": ""
+    },
+    {
+      "kit_num": 71,
+      "name": "Red Bubinga",
+      "subname": ""
+    },
+    {
+      "kit_num": 72,
+      "name": "Dark Studio",
+      "subname": ""
+    },
+    {
+      "kit_num": 73,
+      "name": "Grunge",
+      "subname": ""
+    },
+    {
+      "kit_num": 74,
+      "name": "Electro Pop",
+      "subname": ""
+    },
+    {
+      "kit_num": 75,
+      "name": "Kick With Bass",
+      "subname": ""
+    },
+    {
+      "kit_num": 76,
+      "name": "Rock Filler",
+      "subname": ""
+    },
+    {
+      "kit_num": 77,
+      "name": "Power Metal",
+      "subname": ""
+    },
+    {
+      "kit_num": 78,
+      "name": "Xfade K&S",
+      "subname": ""
+    },
+    {
+      "kit_num": 79,
+      "name": "Hybrid Hop",
+      "subname": ""
+    },
+    {
+      "kit_num": 80,
+      "name": "Dark Pop",
+      "subname": ""
+    },
+    {
+      "kit_num": 81,
+      "name": "Camco Kit",
+      "subname": ""
+    },
+    {
+      "kit_num": 82,
+      "name": "Spectra Kit",
+      "subname": ""
+    },
+    {
+      "kit_num": 83,
+      "name": "TBRad",
+      "subname": ""
+    },
+    {
+      "kit_num": 84,
+      "name": "Jacobs Snoff",
+      "subname": ""
+    },
+    {
+      "kit_num": 85,
+      "name": "Camco Proc",
+      "subname": ""
+    },
+    {
+      "kit_num": 86,
+      "name": "Jamb Kit",
+      "subname": ""
+    },
+    {
+      "kit_num": 87,
+      "name": "Prospect Kit",
+      "subname": ""
+    },
+    {
+      "kit_num": 88,
+      "name": "BG3",
+      "subname": ""
+    },
+    {
+      "kit_num": 89,
+      "name": "Wood Kit",
+      "subname": ""
+    },
+    {
+      "kit_num": 90,
+      "name": "2 KHZ",
+      "subname": ""
+    },
+    {
+      "kit_num": 91,
+      "name": "Schack Tight",
+      "subname": ""
+    },
+    {
+      "kit_num": 92,
+      "name": "WarmAnalogo",
+      "subname": ""
+    },
+    {
+      "kit_num": 93,
+      "name": "ValvedHarmon",
+      "subname": ""
+    },
+    {
+      "kit_num": 94,
+      "name": "SchAckrylic",
+      "subname": ""
+    },
+    {
+      "kit_num": 95,
+      "name": "DnB For Life",
+      "subname": ""
+    },
+    {
+      "kit_num": 96,
+      "name": "",
+      "subname": ""
+    },
+    {
+      "kit_num": 97,
+      "name": "Mitch Smack",
+      "subname": ""
+    },
+    {
+      "kit_num": 98,
+      "name": "Mitch Royals",
+      "subname": ""
+    },
+    {
+      "kit_num": 99,
+      "name": "Mitch Chop",
+      "subname": ""
+    },
+    {
+      "kit_num": 100,
+      "name": "Mitch Kit",
+      "subname": ""
+    }
+  ]

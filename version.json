@@ -1,9 +1,9 @@
 {
-    "version": "1.0",
+    "version": "1.0.3",
     "ico": "./resources/img/icons/drum.ico",
     "company_name": "ChillAspect",
     "product_name": "KitConnect TD-50X GUI Client",
     "description": "A tool to query and display selected drum kits for the Roland TD-50X.",
-    "author": "Cody Travis and BillyGoTo",
+    "author": "Cody Travis",
     "author_email": "chill@chillaspect.com"
 }
