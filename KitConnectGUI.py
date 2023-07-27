@@ -8,9 +8,9 @@ from enum import Enum
 from threading import Thread
 
 # PySide6 Imports
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem, QPushButton, QHBoxLayout, QWidget, QToolButton
-from PySide6.QtCore import Qt, QSettings, QFile, QTextStream, QStandardPaths, QPoint, QTimer, QUrl, QSize, Signal, QObject, QRunnable, QThreadPool
-from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QIntValidator, QMovie, QCursor
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem
+from PySide6.QtCore import Qt, QSettings, QFile, QTextStream, QStandardPaths, QTimer, QUrl, QThreadPool
+from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QCursor
 
 import Resources_rc
 from UI_Components import Ui_MainWindow
@@ -28,12 +28,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.geometryToRestore = None
         self.repoUrl = QUrl("https://github.com/chillfactor032/kitconnect")
         self.midi_devices = []
-        self.current_kit_id = 100
         self.midi_log_entries = 0
         self.midi_log_max_entries = 10000
         self.midi_log_filter = []
         self.midi_log_filter_possible_values = ['sysex', 'note_on', 'note_off', 'polytouch', 'program_change', 'control_change', 'clock', 'all']
         self.twitchbot_key = "1234"
+        self.kit_data = []
+        self.last_kit_sent = 0
+        self.current_kit_num = 0
+        self.current_kit_name = ""
+        self.current_kit_subname = ""
+        self.chatbot_timer = QTimer(self)
+        self.chatbot_timer.setInterval(2000)
+        self.chatbot_timer.timeout.connect(self.check_send_chatbot)
+        self.menu_button_default_css = self.homeMenuButton.styleSheet()
+        self.menu_button_active_css = """
+            #menuFrame QToolButton {
+                background-color: #343b47;
+                color: #fff;
+                text-align: left;
+                border: none;
+                padding: 5px 0px 5px 0px;
+                border-radius: 5px;
+            }
+
+            #menuFrame QToolButton:hover {
+                background-color: #2c313c;
+            }
+        """.strip()
 
         # Read Version File From Resources
         version_file = QFile(":version.json")
@@ -55,6 +77,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if(not os.path.isdir(self.config_dir)):
             os.makedirs(self.config_dir)
         self.ini_path = os.path.join(self.config_dir, f"kitconnectgui.ini").replace("\\", "/")
+        self.kit_data_path = os.path.join(self.config_dir, f"kits.json").replace("\\", "/")
         self.settings = QSettings(self.ini_path, QSettings.IniFormat)
 
         # Read Settings
@@ -91,8 +114,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.midiLogShowAllCheckBox.isChecked():
             self.midi_log_filter.append("all")
 
+        # Kit Data Table Signal
+        self.kitTableWidget.itemChanged.connect(self.saveKitData)
+
         # Navigation Bar Button Signals
         self.homeMenuButton.clicked.connect(self.navBarButtonClicked)
+        self.drumKitsMenuButton.clicked.connect(self.navBarButtonClicked)
         self.midiLogMenuButton.clicked.connect(self.navBarButtonClicked)
         self.appLogMenuButton.clicked.connect(self.navBarButtonClicked)
         self.settingsButton.clicked.connect(self.navBarButtonClicked)
@@ -100,7 +127,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Other Button/Widget Signals
         self.midiDeviceComboBox.currentIndexChanged.connect(self.deviceSelected)
-        self.getCurKitButton.clicked.connect(self.refreshKit)
+        self.refreshKitDataButton.clicked.connect(self.refreshKitData)
         self.refreshDevicesButton.clicked.connect(self.refreshDevices)
         self.browseFileButton.clicked.connect(self.browseOBSFile)
         self.settingsChatBotCheckbox.stateChanged.connect(self.chatBotCheckBoxChanged)
@@ -134,7 +161,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Finally, Show the UI
         self.log("KitConnect started")
-        self.stackedWidget.setCurrentWidget(self.kitsWidget)
+        self.kitTableWidget.setColumnWidth(0, 200)
+        self.kitTableWidget.setRowCount(100)
+        self.loadKitDataFile()
+        self.homeMenuButton.setStyleSheet(self.menu_button_active_css)
+        self.stackedWidget.setCurrentWidget(self.homeWidget)
         self.obsFileLineEdit.setText(self.obsFilePath)
         self.settingsChannelLineEdit.setText(self.twitch_channel)
         self.chatBotCheckBoxChanged()
@@ -149,8 +180,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.log("Test MIDI Device TestPort Enabled")
         self.log(f"Midi Log Filter:")
         self.log(self.midi_log_filter)
-        self.refreshDevices()
+        self.status("KitConnect Started")
         self.show()
+        QTimer.singleShot(1000, self.refreshDevices)
 
     def refreshDevices(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -179,7 +211,60 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.td50x.signals.midi_send.connect(self.midi_send)
         self.td50x.signals.midi_recv.connect(self.midi_recv)
         self.td50x.signals.kit_chg.connect(self.kit_updated)
+        self.td50x.signals.midi_connect.connect(self.deviceConnected)
+        self.td50x.signals.log.connect(self.log)
         self.td50x.midi_start()
+
+    def loadKitDataFile(self):
+        self.kitTableWidget.blockSignals(True)
+        self.kitTableWidget.clearContents()
+        try:
+            if os.path.exists(self.kit_data_path):
+                with open(self.kit_data_path, "r") as kit_file:
+                    self.kit_data = json.load(kit_file)
+            else:
+                self.kit_data = self.getDefaultKitData()
+        except Exception as e:
+            self.kit_data = self.getDefaultKitData()
+        row = 0
+        for kit in self.kit_data:
+            kit_name = QTableWidgetItem(kit["name"])
+            sub_name = QTableWidgetItem(kit["subname"])
+            self.kitTableWidget.setItem(row, 0, kit_name)
+            self.kitTableWidget.setItem(row, 1, sub_name)
+            row+=1
+        self.kitTableWidget.blockSignals(False)
+
+    def saveKitData(self):
+        print("Save kit data")
+        row_count = self.kitTableWidget.rowCount()    
+        for x in range(0, row_count):
+            kit_num = x+1
+            kit_name = self.kitTableWidget.item(x, 0).text()
+            kit_subname = self.kitTableWidget.item(x, 1).text()
+            self.kit_data[x] = {
+                "kit_num": kit_num,
+                "name": kit_name,
+                "subname": kit_subname
+            }
+        with open(self.kit_data_path, "w") as kit_file:
+            json.dump(self.kit_data, kit_file, indent=2)
+        self.status("Kit Data Saved", 2000)
+
+    def getDefaultKitData(self):
+        kit_default_data_file = QFile(":resources/files/kits_default.json")
+        kit_default_data_file.open(QFile.ReadOnly)
+        kit_default_data_text_stream = QTextStream(kit_default_data_file)
+        kit_default_data_file_text = kit_default_data_text_stream.readAll()
+        default_kit_data = json.loads(kit_default_data_file_text)
+        return default_kit_data
+
+    def refreshKitData(self):
+        self.status("Refreshing Kit Data...", 2000)
+        self.refreshKitDataButton.setEnabled(False)
+        QTimer.singleShot(2000, lambda: self.refreshKitDataButton.setEnabled(True))
+        if self.td50x:
+            self.td50x.refresh_current_kit()
 
     def closeTD50X(self):
         if self.td50x:
@@ -187,7 +272,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.td50x.midi_stop()
             self.td50x = None
             self.log("MIDI Device Disconnected")
-        
+    
+    def deviceConnected(self):
+        self.log("Midi Device Connected")
+        self.refreshKitData()
+
     def deviceSelected(self, index):
         self.closeTD50X()
         if index <= 0:
@@ -196,10 +285,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.log(f"MIDI Device Selected: {self.device}")
         self.createTD50X(self.device)
 
-    def kit_updated(self, num, name, subname):
+    # TD-50X Reports the kit changed to the provided kit num
+    def kit_updated(self, num):
+        if num < 1 or num > 100:
+            return
+        kit = self.kit_data[num-1]
+        name = kit["name"]
+        subname = kit["subname"]
         self.kitLCD.display(int(num))
         self.curKitLineEdit.setText(name)
         self.curKitSubLineEdit.setText(subname)
+        self.current_kit_num = num
+        self.current_kit_name = name
+        self.current_kit_subname = subname
+        self.log(f"Current Kit Updated: {self.current_kit_num} - {self.current_kit_name}")
         if not os.path.exists(self.obsFilePath):
             return
         template_str = self.obsFileTemplateEdit.document().toPlainText()
@@ -211,7 +310,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 file.write(out_str)
         except Exception as e:
             self.log("Error: "+str(e))
-        self.updateChatBotKit(self.twitchbot_key, self.twitch_channel, num, name, subname)
+
+    # Called every 2 secs on a timer
+    def check_send_chatbot(self):
+        if self.current_kit_num != self.last_kit_sent:
+            self.updateChatBotKit(self.twitchbot_key, self.twitch_channel, self.current_kit_num, self.current_kit_name, self.current_kit_subname)
+            self.last_kit_sent = self.current_kit_num
+            self.log(f"Kit Sent To Chatbot: {self.current_kit_num} - {self.current_kit_name}")
 
     # Select the file to write kit into to for OBS
     def browseOBSFile(self):
@@ -229,16 +334,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def refreshKit(self):
         print("Refresh Kit")
 
+    def navBarButtonResetBgColors(self):
+        self.homeMenuButton.setStyleSheet(self.menu_button_default_css)
+        self.drumKitsMenuButton.setStyleSheet(self.menu_button_default_css)
+        self.midiLogMenuButton.setStyleSheet(self.menu_button_default_css)
+        self.appLogMenuButton.setStyleSheet(self.menu_button_default_css)
+        self.settingsButton.setStyleSheet(self.menu_button_default_css)
+
     # Slot for Nav Bar Buttons
     def navBarButtonClicked(self):
+        self.navBarButtonResetBgColors()
         sender = self.sender()
         if sender == self.homeMenuButton:
+            self.homeMenuButton.setStyleSheet(self.menu_button_active_css)
+            self.stackedWidget.setCurrentWidget(self.homeWidget)
+        elif sender == self.drumKitsMenuButton:
+            self.drumKitsMenuButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.kitsWidget)
         elif sender == self.midiLogMenuButton:
+            self.midiLogMenuButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.midiWidget)
         elif sender == self.appLogMenuButton:
+            self.appLogMenuButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.logWidget)
         elif sender == self.settingsButton:
+            self.settingsButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.settingsWidget)
         elif sender == self.githubButton:
             QDesktopServices.openUrl(self.repoUrl)
@@ -246,6 +366,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Slot of ChatBot Comms Checkbox
     def chatBotCheckBoxChanged(self):
         self.chatBotCommsEnabled = self.settingsChatBotCheckbox.isChecked()
+        if self.chatBotCommsEnabled:
+            self.chatbot_timer.start()
+        else:
+            self.chatbot_timer.stop()
         self.log(f"ChatBot Communication Enabled: {self.chatBotCommsEnabled}")
 
     def twitchChannelChanged(self):
@@ -312,7 +436,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 if "all" in self.midi_log_filter:
                     self.midi_log_filter.remove("all")
-        print(self.midi_log_filter)
+        #print(self.midi_log_filter)
 
     # Sent a MIDI Message
     def midi_send(self, msg):

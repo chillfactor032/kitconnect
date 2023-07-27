@@ -13,11 +13,12 @@ mido.set_backend('mido.backends.pygame')
 
 class MidiConnection(Thread):
 
-    def __init__(self, io_port_name, recv_msg_callback=None):
+    def __init__(self, io_port_name, recv_msg_callback=None, connected_callback=None):
         super(MidiConnection, self).__init__()
         self.io_port_name = io_port_name
         self.port = None
         self.recv_msg_callback = recv_msg_callback
+        self.connected_callback = connected_callback
         self.stopped = False
 
     def send_msg(self, msg):
@@ -30,8 +31,10 @@ class MidiConnection(Thread):
             self.port = TestPort()
         else:
             self.port = mido.open_ioport(self.io_port_name)
+        if self.port and self.connected_callback is not None:
+            self.connected_callback()
         while not self.stopped:
-            time.sleep(0.001)
+            time.sleep(0.0001)
             msg = self.port.poll()
             if msg:
                 self.recv_msg_callback(msg)

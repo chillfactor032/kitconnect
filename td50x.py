@@ -18,10 +18,12 @@ from MidiConnection import MidiConnection
 class TD50X():
 
     class Signals(QObject):
+        log = Signal(str)
         midi_recv = Signal(mido.Message)
         midi_send = Signal(mido.Message)
+        midi_connect = Signal()
         #Kit Change Event: kit num, kit name, kit subname
-        kit_chg = Signal(int, str, str) 
+        kit_chg = Signal(int)
 
     class Constants():
         ROLAND_ID = 0x41
@@ -124,10 +126,24 @@ class TD50X():
         self.port_name = port_name
         self.device_id = device_id
         self.midi_channel = midi_channel
-        self.midi = MidiConnection(self.port_name,self.recv_msg)
+        self.kit_data = []
+        self.clear_kit_data()
+        self.midi = MidiConnection(self.port_name, self.recv_msg, self.connected_callback)
+
+    def log(self, msg):
+        self.signals.log.emit(msg)
+
+    def clear_kit_data(self):
+        self.kit_data = []
+        for x in range(0,101):
+            self.kit_data.append(["",""])
 
     def set_device_id(self, device_id):
         self.device_id = device_id
+
+    def connected_callback(self):
+        #called when midi connection is established
+        self.signals.midi_connect.emit()
 
     def midi_start(self):
         self.midi.start()
@@ -135,6 +151,13 @@ class TD50X():
     def midi_stop(self, wait=True):
         self.midi.stop()
         self.midi.join()
+
+    def refresh_all_kits(self):
+        self.clear_kit_data()
+        for x in range(0,101):
+            print(f"Refresh Kit {x}")
+            self.refresh_current_kit(x)
+            time.sleep(0.01)
 
     def refresh_current_kit(self, kit_id=None):
         if not kit_id:
@@ -173,11 +196,11 @@ class TD50X():
         if msg.type == "sysex":
             self.recv_sysex_msg(msg)
         if msg.type == "program_change":
-            #Kit has been changed, send kit refresh msg
-            self.refresh_current_kit(msg.program)
+            # Kit has been changed, emit the signal to UI thread
+            # msg.program is the kit id, not kit number
+            self.signals.kit_chg.emit(msg.program+1)
         if msg.type == "note_on":
             pass
-        print(f"< [{msg}]")
 
     def recv_sysex_msg(self, msg):
         cmd = msg.data[7]
@@ -188,13 +211,16 @@ class TD50X():
             # Current Kit Query
             kit_id = msg.data[-2]
             #Update Get Kit Name too
-            self.refresh_current_kit(kit_id)
+            #self.refresh_current_kit(kit_id)
+            #Update the UI to ensure current kit is selected
+            self.signals.kit_chg.emit(kit_id+1)
         elif cmd == TD50X.Command.DT1.value and addr >= self.unpack([4,0,0,0]) and addr <= self.unpack([5,0x46,0,0]):
             #Kit Name Query
             self.kit_id = self.addr_to_kit_id(msg.data[8:12])
             self.kit_name = TD50X.list_to_ascii(msg.data[12:24]).rstrip()
             self.kit_subname = TD50X.list_to_ascii(msg.data[24:-2]).rstrip()
-            self.signals.kit_chg.emit(self.kit_id+1, self.kit_name, self.kit_subname)
+            self.kit_data[self.kit_id+1] = [self.kit_name, self.kit_subname]
+            #self.log(f"Kit Data Recv: {self.kit_id} - {self.kit_name} - {self.kit_subname}")
 
     def prepare_sysex_msg(self, addr, size):
         """add the status fields and checksum to the message"""

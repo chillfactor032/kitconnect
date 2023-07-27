@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
     <file>version.json</file>
+    <file>resources/files/kits_default.json</file>
     <file>resources/img/icons/x.svg</file>
     <file>resources/img/icons/maximize.svg</file>
     <file>resources/img/icons/minimize.svg</file>
