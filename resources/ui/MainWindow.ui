@@ -58,7 +58,7 @@ QCheckBox {
 	text-align: left;
 	border: none;
 	padding: 5px 0px 5px 0px;
-	border-radius: 10px;
+	border-radius: 5px;
 }
 
 #menuFrame QToolButton:hover {
@@ -82,6 +82,18 @@ QCheckBox {
 }
 
 #homeWidget QToolButton {
+	background-color: #2c313c;
+	color: #fff;
+	border-radius: 5px;
+	/*border: none;*/
+	padding: 0px 0px 0px 5px;
+}
+
+#spdxWidget {
+	background-color: #1f2322;
+}
+
+#spdxWidget QToolButton {
 	background-color: #2c313c;
 	color: #fff;
 	border-radius: 5px;
@@ -285,6 +297,31 @@ QCheckBox {
             <property name="icon">
              <iconset resource="../../Resources.qrc">
               <normaloff>:/resources/img/icons/music.svg</normaloff>:/resources/img/icons/music.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="spdxMenuButton">
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string> SPD-SX</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../Resources.qrc">
+              <normaloff>:/resources/img/icons/table.svg</normaloff>:/resources/img/icons/table.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -523,7 +560,7 @@ QCheckBox {
              <number>2</number>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="homeWidget">
              <property name="sizePolicy">
@@ -545,6 +582,20 @@ QCheckBox {
                  <string notr="true">QGroupBox{
 	border: 1px solid white;
 	color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
 }</string>
                 </property>
                 <property name="title">
@@ -594,51 +645,11 @@ QCheckBox {
                   <bool>true</bool>
                  </property>
                 </widget>
-                <widget class="QGroupBox" name="groupBox">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>30</y>
-                   <width>181</width>
-                   <height>121</height>
-                  </rect>
-                 </property>
-                 <property name="title">
-                  <string/>
-                 </property>
-                 <widget class="QLCDNumber" name="kitLCD">
-                  <property name="geometry">
-                   <rect>
-                    <x>0</x>
-                    <y>0</y>
-                    <width>181</width>
-                    <height>121</height>
-                   </rect>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">QLCDNumber {
-	color: #343b47;
-}</string>
-                  </property>
-                  <property name="midLineWidth">
-                   <number>0</number>
-                  </property>
-                  <property name="digitCount">
-                   <number>3</number>
-                  </property>
-                  <property name="mode">
-                   <enum>QLCDNumber::Dec</enum>
-                  </property>
-                  <property name="segmentStyle">
-                   <enum>QLCDNumber::Filled</enum>
-                  </property>
-                 </widget>
-                </widget>
                 <widget class="QToolButton" name="refreshKitDataButton">
                  <property name="geometry">
                   <rect>
                    <x>430</x>
-                   <y>119</y>
+                   <y>310</y>
                    <width>191</width>
                    <height>31</height>
                   </rect>
@@ -682,6 +693,301 @@ QToolButton:pressed
                   <enum>Qt::ToolButtonTextBesideIcon</enum>
                  </property>
                 </widget>
+                <widget class="QGroupBox" name="obsGroupBox">
+                 <property name="geometry">
+                  <rect>
+                   <x>20</x>
+                   <y>30</y>
+                   <width>591</width>
+                   <height>121</height>
+                  </rect>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
+}</string>
+                 </property>
+                 <property name="title">
+                  <string>OBS Source</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_3">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="obs_src_label">
+                    <property name="font">
+                     <font>
+                      <pointsize>20</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="spdxWidget">
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <item>
+               <widget class="QGroupBox" name="spdxDeviceGroupBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QGroupBox{
+	border: 1px solid white;
+	color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
+}</string>
+                </property>
+                <property name="title">
+                 <string>Select SPD-SX PRO Device</string>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <property name="spacing">
+                  <number>20</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>20</number>
+                 </property>
+                 <item>
+                  <widget class="QComboBox" name="spdxDeviceComboBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>400</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Select a MIDI Device</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QToolButton" name="refreshSPDXDevicesButton">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QToolButton {
+	border-width: 1px;
+	border-width: 1px;
+	border-width: 1px;
+ 	border-radius: 5px;
+}
+
+QToolButton:pressed
+{
+	border-style:solid;
+	border-width:1px;
+	border-color: #ffffff;
+	margin-left: 3px;
+	margin-top: 3px;
+}</string>
+                   </property>
+                   <property name="text">
+                    <string> Refresh</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../Resources.qrc">
+                     <normaloff>:/resources/img/icons/refresh-cw.svg</normaloff>:/resources/img/icons/refresh-cw.svg</iconset>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="groupBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>80</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QGroupBox{
+	border: 1px solid white;
+	color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
+}</string>
+                </property>
+                <property name="title">
+                 <string>WebSocket Server</string>
+                </property>
+                <widget class="QToolButton" name="restartWebsocketButton">
+                 <property name="geometry">
+                  <rect>
+                   <x>510</x>
+                   <y>34</y>
+                   <width>100</width>
+                   <height>25</height>
+                  </rect>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string> Restart</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../Resources.qrc">
+                   <normaloff>:/resources/img/icons/refresh-cw.svg</normaloff>:/resources/img/icons/refresh-cw.svg</iconset>
+                 </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextBesideIcon</enum>
+                 </property>
+                </widget>
+                <widget class="QLineEdit" name="lineEdit">
+                 <property name="geometry">
+                  <rect>
+                   <x>20</x>
+                   <y>40</y>
+                   <width>271</width>
+                   <height>20</height>
+                  </rect>
+                 </property>
+                </widget>
+                <widget class="QLineEdit" name="lineEdit_2">
+                 <property name="geometry">
+                  <rect>
+                   <x>310</x>
+                   <y>40</y>
+                   <width>113</width>
+                   <height>20</height>
+                  </rect>
+                 </property>
+                </widget>
+                <widget class="QLabel" name="label_8">
+                 <property name="geometry">
+                  <rect>
+                   <x>20</x>
+                   <y>20</y>
+                   <width>47</width>
+                   <height>13</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Host</string>
+                 </property>
+                </widget>
+                <widget class="QLabel" name="label_9">
+                 <property name="geometry">
+                  <rect>
+                   <x>310</x>
+                   <y>20</y>
+                   <width>47</width>
+                   <height>13</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string>Port</string>
+                 </property>
+                </widget>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="groupBox_5">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QGroupBox{
+	border: 1px solid white;
+	color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
+}</string>
+                </property>
+                <property name="title">
+                 <string>Color Mapping</string>
+                </property>
                </widget>
               </item>
              </layout>
@@ -874,6 +1180,20 @@ QToolButton:pressed
 
 Line {
 	color: blue;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
 }</string>
                      </property>
                      <property name="title">
@@ -1060,10 +1380,24 @@ Line {
                  <string notr="true">QGroupBox{
 	border: 1px solid white;
 	color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
 }</string>
                 </property>
                 <property name="title">
-                 <string>Midi Devices</string>
+                 <string>Select TD-50X Device</string>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_5">
                  <property name="spacing">
@@ -1139,6 +1473,20 @@ QToolButton:pressed
                  <string notr="true">QGroupBox{
 	border: 1px solid white;
 	color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
 }</string>
                 </property>
                 <property name="title">
@@ -1286,6 +1634,20 @@ QToolButton:pressed
                  <string notr="true">QGroupBox{
 	border: 1px solid white;
 	color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 7px;
+	top: -10ox;
+    padding: 0px 5px 0px 5px;
+}
+
+QGroupBox {
+    font: bold;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin-top: 6px;
 }</string>
                 </property>
                 <property name="title">

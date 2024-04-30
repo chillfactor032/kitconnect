@@ -2,6 +2,8 @@
 <qresource>
     <file>version.json</file>
     <file>resources/files/kits_default.json</file>
+    <file>resources/files/Seven_Segment.ttf</file>
+    <file>resources/img/kit_bttf.png</file>
     <file>resources/img/icons/x.svg</file>
     <file>resources/img/icons/maximize.svg</file>
     <file>resources/img/icons/minimize.svg</file>
@@ -21,5 +23,6 @@
     <file>resources/img/icons/settings.svg</file>
     <file>resources/img/icons/drum.ico</file>
     <file>resources/img/icons/drum.png</file>
+    <file>resources/img/icons/table.svg</file>
 </qresource>
 </RCC>

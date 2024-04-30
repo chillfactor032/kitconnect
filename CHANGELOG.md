@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
  
+## [1.0.4] - 2023-09-05
+ 
+Removed the LCD kit display because it was redundant and added an OBS Source display that will display the contents of the OBS source file.
+
 ## [1.0.3] - 2023-07-27
  
 Added the behavior to query the TD-50X for the current kit number on midi connect and by the press of a button.

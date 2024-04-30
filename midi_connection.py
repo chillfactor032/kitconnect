@@ -1,32 +1,35 @@
-#Suppress the hello message from PyGame
-from os import environ
-environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
-
-#Python Imports
-from threading import Thread
-import mido
-from mido.ports import BaseIOPort
+"""
+MidiConnection controls the i/o messages to a midi port
+TestPort is a virtual midi port for testing
+"""
+import queue
 import time
 import random
+from threading import Thread
+from os import environ
+import mido
 
+#Suppress the hello message from PyGame
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 mido.set_backend('mido.backends.pygame')
 
 class MidiConnection(Thread):
-
+    """Controls the i/o messages to a midi port"""
     def __init__(self, io_port_name, recv_msg_callback=None, connected_callback=None):
         super(MidiConnection, self).__init__()
         self.io_port_name = io_port_name
         self.port = None
+        self.msg_queue = queue.SimpleQueue()
         self.recv_msg_callback = recv_msg_callback
         self.connected_callback = connected_callback
         self.stopped = False
 
     def send_msg(self, msg):
-        if self.port is None or self.port.closed:
-            return
-        self.port.send(msg)
+        """Put a Midi Message on the Outbound Queue"""
+        self.msg_queue.put(msg)
 
     def run(self):
+        """Start the I/O Thread"""
         if self.io_port_name == "TestPort":
             self.port = TestPort()
         else:
@@ -34,24 +37,31 @@ class MidiConnection(Thread):
         if self.port and self.connected_callback is not None:
             self.connected_callback()
         while not self.stopped:
-            time.sleep(0.0001)
+            time.sleep(0.00001)
+            # Check if message has been recv
             msg = self.port.poll()
             if msg:
                 self.recv_msg_callback(msg)
+            # Check if there is an outgoing msg in queue
+            if not self.msg_queue.empty():
+                msg = self.msg_queue.get_nowait()
+                self.port.send(msg)
         self.port.close()
 
     def stop(self):
+        """Tell the MidiConnection thread to stop"""
         self.stopped = True
 
     @staticmethod
     def get_devices():
+        """Static Function to list the midi devices on this computer"""
         devices = mido.get_ioport_names()
         return devices
         
-class TestPort(BaseIOPort):
-    
+class TestPort(mido.ports.BaseIOPort):
+    """A virtual midi port for testing"""
     def __init__(self, callback=None):
-        super(BaseIOPort, self).__init__()
+        super(mido.ports.BaseIOPort, self).__init__()
         self.name = "Test Port"
         self.closed = False
         self.callback = callback
@@ -87,6 +97,7 @@ class TestPort(BaseIOPort):
         return msg
     
     def callback_monitor(self):
+        """Callback function called when a message is recv"""
         while not self.closed:
             time.sleep(random.random()*0.6)
             msg = self.random_msg()
@@ -94,22 +105,18 @@ class TestPort(BaseIOPort):
             self.callback(msg)
 
     def _open(self):
-        #print("TestPort Opened")
         pass
 
     def _close(self):
         self.closed = True
         if self.callback is not None:
             self.callback_thread.join()
-        #print("TestPort Closed")
 
     def _send(self, msg):
-        #print(f"TestPort Recv: [{msg}]")
         pass
 
     def _receive(self, block=False):
         msg = self.random_msg()
-        #print(f"TestPort Send: [{msg}]")
         time.sleep(random.random())
         return msg
 

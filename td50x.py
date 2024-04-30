@@ -13,7 +13,7 @@ from enum import Enum
 #PySide6 Imports
 from PySide6.QtCore import Signal, QObject
 
-from MidiConnection import MidiConnection
+from midi_connection import MidiConnection
 
 class TD50X():
 

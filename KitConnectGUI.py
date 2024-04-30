@@ -1,3 +1,6 @@
+"""
+KitConnect GUI
+"""
 import json
 import os
 import datetime
@@ -9,8 +12,9 @@ from threading import Thread
 
 # PySide6 Imports
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem
-from PySide6.QtCore import Qt, QSettings, QFile, QTextStream, QStandardPaths, QTimer, QUrl, QThreadPool
+from PySide6.QtCore import Qt, QSettings, QFile, QTextStream, QByteArray, QStandardPaths, QTimer, QUrl, QThreadPool
 from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QCursor
+from PySide6.QtWebEngineWidgets import QWebEngineView
 
 import Resources_rc
 from UI_Components import Ui_MainWindow
@@ -56,13 +60,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 background-color: #2c313c;
             }
         """.strip()
-
+        
         # Read Version File From Resources
         version_file = QFile(":version.json")
         version_file.open(QFile.ReadOnly)
         text_stream = QTextStream(version_file)
         version_file_text = text_stream.readAll()
         self.version_dict = json.loads(version_file_text)
+        version_file.close()
         self.app_name = self.version_dict["product_name"]
         self.version = self.version_dict["version"]
         self.description = self.version_dict["description"]
@@ -70,17 +75,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.author_email = self.version_dict["author_email"]
         self.project_name = self.app_name.title().replace(" ", "")
         self.setWindowTitle(f"{self.app_name} {self.version}")
-        
-        # Load Settings
+        kit_img_file = QFile(":resources/img/kit_bttf.png")
+        kit_img_file.open(QFile.ReadOnly)
+        kit_img_file_bytes = kit_img_file.readAll()
+        self.kit_img_b64 = bytes(kit_img_file_bytes.toBase64()).decode()
+        font_file = QFile(":resources/files/Seven_Segment.ttf")
+        font_file.open(QFile.ReadOnly)
+        font_file_bytes = font_file.readAll()
+        self.font_b64 = bytes(font_file_bytes.toBase64()).decode()
+
         self.config_dir = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation)
         self.documents = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
         if(not os.path.isdir(self.config_dir)):
             os.makedirs(self.config_dir)
         self.ini_path = os.path.join(self.config_dir, f"kitconnectgui.ini").replace("\\", "/")
         self.kit_data_path = os.path.join(self.config_dir, f"kits.json").replace("\\", "/")
+        self.font_path = os.path.join(self.config_dir, f"Seven_Segment.ttf").replace("\\", "/")
         self.settings = QSettings(self.ini_path, QSettings.IniFormat)
 
+        # Check if font file exists
+        if not os.path.exists(self.font_path):
+            font_file = QFile(":resources/files/Seven_Segment.ttf")
+            if font_file.copy(self.font_path):
+                self.log("Seven Segment Font File Copied Successfully")
+            else:
+                self.log("Error copying font file")
+
         # Read Settings
+        self.chat_command_url = ""
+        self.chat_command_url = self.settings.value(f"{self.project_name}/ChatCommandURL", "https://backbeatbot.com/kitconnect.php")
         self.testport_midi_enabled = self.settings.value(f"{self.project_name}/EnableTestPortMidiDevice", "0") == "1"
         self.obsFilePath = self.settings.value(f"{self.project_name}/OBSFilePath", "")
         self.device = self.settings.value(f"{self.project_name}/MidiDevice", "")
@@ -120,6 +143,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Navigation Bar Button Signals
         self.homeMenuButton.clicked.connect(self.navBarButtonClicked)
         self.drumKitsMenuButton.clicked.connect(self.navBarButtonClicked)
+        self.spdxMenuButton.clicked.connect(self.navBarButtonClicked)
         self.midiLogMenuButton.clicked.connect(self.navBarButtonClicked)
         self.appLogMenuButton.clicked.connect(self.navBarButtonClicked)
         self.settingsButton.clicked.connect(self.navBarButtonClicked)
@@ -161,6 +185,46 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Finally, Show the UI
         self.log("KitConnect started")
+        self.log(self.font_path)
+        self.log(f"Chat Command URL: {self.chat_command_url}")
+        self.obs_webview_html = f"""
+        <html>
+        <style>
+        @font-face {{
+			font-family: 'seven_segment';
+			src: url("data:font/ttf;base64, {self.font_b64}");
+		}}
+        body {{
+            background-color: green;
+        }}
+        #kit_img {{
+            height: 60px;
+            width: auto;
+        }}
+        #kit_info {{
+            font-size: 40px;
+            text-align: left;
+        }}
+        .lcd {{
+            font-family: "seven_segment";
+            text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+        }}
+        </style>
+        <body>
+        <div>
+        <table width="100%" border=0>
+        <tr>
+            <td style="width: 1px;"><img id="kit_img" src="data:image/png;base64, {self.kit_img_b64}" /></td>
+            <td id="kit_info" class="lcd">{{kit_num}} - {{kit_name}} </td>
+        </tr>
+        </table>
+        </div>
+        <body>
+        </html>
+        """.strip()
+        self.obs_webview = QWebEngineView()
+        #self.obsGroupBox.layout().addWidget(self.obs_webview)
+        self.obs_webview.setHtml(self.obs_webview_html)
         self.kitTableWidget.setColumnWidth(0, 200)
         self.kitTableWidget.setRowCount(100)
         self.loadKitDataFile()
@@ -292,8 +356,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         kit = self.kit_data[num-1]
         name = kit["name"]
         subname = kit["subname"]
-        self.kitLCD.display(int(num))
-        self.curKitLineEdit.setText(name)
+        self.curKitLineEdit.setText(f"{num} - {name}")
         self.curKitSubLineEdit.setText(subname)
         self.current_kit_num = num
         self.current_kit_name = name
@@ -310,7 +373,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 file.write(out_str)
         except Exception as e:
             self.log("Error: "+str(e))
-
+        self.obs_src_label.setText(out_str)
+        """
+        template_str = self.obs_webview_html
+        out_str = template_str.replace("{kit_num}", str(num))
+        out_str = out_str.replace("{kit_name}", name)
+        out_str = out_str.replace("{kit_subname}", subname)
+        self.obs_webview.setHtml(out_str)
+        self.obsGroupBox.repaint()
+        """
+        
     # Called every 2 secs on a timer
     def check_send_chatbot(self):
         if self.current_kit_num != self.last_kit_sent:
@@ -351,6 +423,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         elif sender == self.drumKitsMenuButton:
             self.drumKitsMenuButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.kitsWidget)
+        elif sender == self.spdxMenuButton:
+            self.spdxMenuButton.setStyleSheet(self.menu_button_active_css)
+            self.stackedWidget.setCurrentWidget(self.spdxWidget)
         elif sender == self.midiLogMenuButton:
             self.midiLogMenuButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.midiWidget)
@@ -451,7 +526,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         thread.start()
     
     def updateChatBotKitWorker(self, key, channel, kit_num, kit_name, kit_subname):
-        data = {
+        payload = {
             "key": key,
             "type": "kit",
             "channel": channel,
@@ -459,9 +534,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "kit_name": kit_name,
             "kit_subname": kit_subname
         }
-        url = "http://twitchbot.chillaspect.com/kitconnect.php"
-        r = requests.post(url, json=data)
+        print(f"Submitting data to chatbot: {payload}")
+        r = requests.post(self.chat_command_url, json=payload)
         if r.status_code >= 400:
+            print(r.headers)
             self.log(f"Error updating chat bot with current kit: {r.text}")
 
     # Write messages to App Log
@@ -516,6 +592,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def saveSettings(self):
         self.settings.setValue(f"{self.project_name}/geometry", self.saveGeometry())
         self.settings.setValue(f"{self.project_name}/windowState", self.saveState())
+        self.settings.setValue(f"{self.project_name}/ChatCommandURL", self.chat_command_url)
         if self.testport_midi_enabled:
             self.settings.setValue(f"{self.project_name}/EnableTestPortMidiDevice", "1")
         else:
