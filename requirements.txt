@@ -3,3 +3,4 @@ PyInstaller
 requests
 pygame
 mido
+websockets

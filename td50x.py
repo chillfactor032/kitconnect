@@ -117,9 +117,10 @@ class TD50X():
         AUX_4_HEAD = 33
         AUX4_RIM = 34
 
-    def __init__(self, port_name, midi_channel=0x09, device_id=0x10):
+    def __init__(self, port_name, midi_channel=0x09, device_id=0x10, **kwargs):
         super(TD50X, self).__init__()
         self.signals = self.Signals()
+        self.msg_callback = kwargs.get("msg_callback", None)
         self.kit_id = 0
         self.kit_name = "Not Set"
         self.kit_subname = ""
@@ -201,6 +202,8 @@ class TD50X():
             self.signals.kit_chg.emit(msg.program+1)
         if msg.type == "note_on":
             pass
+        if self.msg_callback is not None:
+            self.msg_callback(msg)
 
     def recv_sysex_msg(self, msg):
         cmd = msg.data[7]

@@ -101,7 +101,7 @@ class TestPort(mido.ports.BaseIOPort):
         while not self.closed:
             time.sleep(random.random()*0.6)
             msg = self.random_msg()
-            #print(f"TestPort Send: [{msg}]")
+            print(f"TestPort Send: [{msg}]")
             self.callback(msg)
 
     def _open(self):

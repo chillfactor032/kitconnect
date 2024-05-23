@@ -3,6 +3,7 @@ from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 from td50x import TD50X
+from wled import WledWebsocket
 import sys
 import random
 import mido
@@ -36,8 +37,17 @@ def quit(code):
     print(f"Exit Code:{code}")
     sys.exit(code)
 
+
+#Wled websocket
+wled = WledWebsocket("wss://192.168.1.199/ws")
+wled.start()
+
+def msg_recv(msg):
+    print("callback")
+
 #Get Midi Devices
 devices = TD50X.get_midi_devices()
+devices.append("TestPort")
 
 #Select Midi Device
 while device is None:
@@ -59,11 +69,12 @@ while device is None:
     device = devices[selection]
 
 #Create MidiConnection
-td50x = TD50X(devices[selection])
+td50x = TD50X(devices[selection], msg_callbacl=msg_recv)
 td50x.midi_start()
 
 #Send / Recv Midi Packets
 selection = ""
+
 while True:
     #print options
     i = 0
@@ -81,6 +92,8 @@ while True:
         print("\nKeyboard Interrupt.")
         print("Waiting for MidiConnection to stop...", end="")
         td50x.midi_stop()
+        wled.stop()
+        wled.join()
         quit(0)
     if len(selection) == 0:
         continue
