@@ -47,6 +47,12 @@ def msg_recv(msg):
     if msg.type == 'note_on' and msg.note == TD50X.NoteNumbers.SNARE_HEAD:
         print("Snare Hit: Sending WLED Message")
         wled.send(json.dumps({"ps": "0"}))
+    if msg.type == 'note_on' and msg.note == TD50X.NoteNumbers.TOM_1:
+        print("Tom 1 Hit: Sending WLED Message")
+        wled.send(json.dumps({"ps": "0"}))
+    if msg.type == 'note_on' and msg.note == TD50X.NoteNumbers.TOM_2:
+        print("Tom 2 Hit: Sending WLED Message")
+        wled.send(json.dumps({"ps": "0"}))
 
 #Get Midi Devices
 devices = TD50X.get_midi_devices()
