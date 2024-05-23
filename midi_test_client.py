@@ -43,7 +43,7 @@ def quit(code):
 #wled.start()
 
 def msg_recv(msg):
-    print("callback")
+    print(msg)
 
 #Get Midi Devices
 devices = TD50X.get_midi_devices()
@@ -69,7 +69,7 @@ while device is None:
     device = devices[selection]
 
 #Create MidiConnection
-td50x = TD50X(devices[selection], msg_callbacl=msg_recv)
+td50x = TD50X(devices[selection], msg_callback=msg_recv)
 td50x.midi_start()
 
 #Send / Recv Midi Packets
