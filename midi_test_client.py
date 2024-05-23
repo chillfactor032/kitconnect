@@ -39,8 +39,8 @@ def quit(code):
 
 
 #Wled websocket
-wled = WledWebsocket("wss://192.168.1.199/ws")
-wled.start()
+#wled = WledWebsocket("wss://192.168.1.199/ws")
+#wled.start()
 
 def msg_recv(msg):
     print("callback")
@@ -92,8 +92,8 @@ while True:
         print("\nKeyboard Interrupt.")
         print("Waiting for MidiConnection to stop...", end="")
         td50x.midi_stop()
-        wled.stop()
-        wled.join()
+        #wled.stop()
+        #wled.join()
         quit(0)
     if len(selection) == 0:
         continue
