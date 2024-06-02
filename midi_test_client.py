@@ -55,17 +55,17 @@ def msg_recv(msg):
         print("Snare Hit: Sending WLED Message")
         color = colors[notes[TD50X.NoteNumbers.SNARE_HEAD]]
         notes[TD50X.NoteNumbers.SNARE_HEAD] = (notes[TD50X.NoteNumbers.SNARE_HEAD]+1) % 2
-        wled.send(json.dumps({"seg": {"id": "0", "i":[0, 10, color]}}))
+        wled.send({"seg": {"id": "0", "i":[0, 10, color]}})
     if msg.type == 'note_on' and msg.note == TD50X.NoteNumbers.TOM_1.value:
         print("Tom 1 Hit: Sending WLED Message")
         color = colors[notes[TD50X.NoteNumbers.TOM_1]]
         notes[TD50X.NoteNumbers.TOM_1] = (notes[TD50X.NoteNumbers.TOM_1]+1) % 2
-        wled.send(json.dumps({"seg": {"id": "0", "i":[0, 10, color]}}))
+        wled.send({"seg": {"id": "0", "i":[0, 10, color]}})
     if msg.type == 'note_on' and msg.note == TD50X.NoteNumbers.TOM_2.value:
         print("Tom 2 Hit: Sending WLED Message")
         color = colors[notes[TD50X.NoteNumbers.TOM_2]]
         notes[TD50X.NoteNumbers.TOM_2] = (notes[TD50X.NoteNumbers.TOM_2]+1) % 2
-        wled.send(json.dumps({"seg": {"id": "0", "i":[0, 10, color]}}))
+        wled.send({"seg": {"id": "0", "i":[0, 10, color]}})
 
 #Get Midi Devices
 devices = TD50X.get_midi_devices()

@@ -24,5 +24,11 @@
     <file>resources/img/icons/drum.ico</file>
     <file>resources/img/icons/drum.png</file>
     <file>resources/img/icons/table.svg</file>
+    <file>resources/img/icons/sun.svg</file>
+    <file>resources/img/icons/save.svg</file>
+    <file>resources/img/icons/plus-square.svg</file>
+    <file>resources/img/icons/x-square.svg</file>
+    <file>resources/img/icons/edit.svg</file>
+    <file>resources/img/icons/zap.svg</file>
 </qresource>
 </RCC>
