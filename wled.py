@@ -29,7 +29,8 @@ class WledWebsocket(threading.Thread):
         return self._connected
 
     def on_message(self, msg):
-        self.log(msg)
+        #self.log(msg)
+        pass
 
     def stop(self):
         self._stopped = True

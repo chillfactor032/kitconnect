@@ -247,7 +247,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.update_react_rows()
         self.obs_webview = QWebEngineView()
-        #self.obsGroupBox.layout().addWidget(self.obs_webview)
         self.obs_webview.setHtml(self.obs_webview_html)
         self.kitTableWidget.setColumnWidth(0, 200)
         self.kitTableWidget.setRowCount(100)
@@ -433,14 +432,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         except Exception as e:
             self.log("Error: "+str(e))
         self.obs_src_label.setText(out_str)
-        """
-        template_str = self.obs_webview_html
-        out_str = template_str.replace("{kit_num}", str(num))
-        out_str = out_str.replace("{kit_name}", name)
-        out_str = out_str.replace("{kit_subname}", subname)
-        self.obs_webview.setHtml(out_str)
-        self.obsGroupBox.repaint()
-        """
     
     def react_add_row(self):
         print("React Add Row")
@@ -510,10 +501,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.reactTable.insertRow(0)
             self.reactTable.setItem(0, 0, QTableWidgetItem(self.react_rows[x][0].name))
             self.reactTable.setItem(0, 1, QTableWidgetItem(self.react_rows[x][1]))
-            msg_txt = self.react_rows[x][2]
-            if len(msg_txt) > 32:
-                msg_txt = msg_txt[:32]+"..."
-            self.reactTable.setItem(0, 2, QTableWidgetItem(msg_txt))
+            self.reactTable.setItem(0, 2, QTableWidgetItem(self.react_rows[x][2]))
 
     def clear_react_table(self):
         while self.reactTable.rowCount() > 0:
@@ -648,7 +636,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 if "all" in self.midi_log_filter:
                     self.midi_log_filter.remove("all")
-        #print(self.midi_log_filter)
 
     # Sent a MIDI Message
     def midi_send(self, msg):
@@ -670,7 +657,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         ws_msg = ws_msg.replace("${VELOCITY}", str(midi_dict.get("velocity", 64)))
         return ws_msg
             
-
     def updateChatBotKit(self, key, channel, kit_num, kit_name, kit_subname):
         thread = Thread(target=self.updateChatBotKitWorker, args=(key, channel, kit_num, kit_name, kit_subname))
         thread.start()
