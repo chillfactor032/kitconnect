@@ -76,7 +76,8 @@ class TestPort(mido.ports.BaseIOPort):
             38,
             48,
             45,
-            43
+            43,
+            36
         ]
         kit_chng = [
             mido.Message('sysex', data=[65,16,0,0,0,0,7,18,4,36,0,0,76,117,100,119,105,103,32,83,117,112,114,97,72,121,98,114,105,100,32,32,32,32,32,32,32,32,76]),
@@ -84,7 +85,7 @@ class TestPort(mido.ports.BaseIOPort):
             mido.Message('sysex', data=[65,16,0,0,0,0,7,18,4,76,0,0,65,105,114,70,114,111,109,26,65,115,105,97,84,97,98,108,97,32,32,32,32,32,32,32,32,32,32,32,76])
         ]
         notes = [
-            mido.Message("note_on", note=38),
+            mido.Message("note_on", note=38, velocity=random.randint(1,127)),
             mido.Message("note_off", note=38)
         ]
         other = [

@@ -6,6 +6,7 @@ import os
 import datetime
 import sys
 import base64
+import re
 import requests
 from enum import Enum
 from threading import Thread
@@ -662,9 +663,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for react in self.react_rows:
             #0: Note 1: midi  2: msg
             if react[0].value == note or react[0] == TD50X.NoteNumbers.UNKNOWN.value:
-                print(f"react: value matches {react[0]}")
                 if react[1] == msg.type or react[1] == "any":
-                    self.wled_ws.send(react[2])
+                    self.wled_ws.send(self.ws_var_replace(react[2], msg.dict()))
+
+    def ws_var_replace(self, ws_msg: str, midi_dict: dict):
+        ws_msg = ws_msg.replace("${VELOCITY}", str(midi_dict.get("velocity", 64)))
+        return ws_msg
             
 
     def updateChatBotKit(self, key, channel, kit_num, kit_name, kit_subname):
@@ -846,7 +850,8 @@ class ReactDialog(QDialog):
         event = self.ui.midiEventCombo.currentData()
         message = self.ui.messageEdit.toPlainText()
         try:
-            message_on_obj = json.loads(message)
+            test_message = re.sub(r"\${.*?}", "0", message)
+            message_on_obj = json.loads(test_message)
         except json.JSONDecodeError:
             QMessageBox.critical(self, "Error", "Could not parse ON message as JSON.", QMessageBox.StandardButton.Ok)
             self.results = [None, None, None]
