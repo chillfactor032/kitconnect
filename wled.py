@@ -42,8 +42,8 @@ class WledWebsocket(threading.Thread):
         try:
             return await websocket.recv()
         except Exception as e:
-            self.log("Error recv new message")
-            self.log(str(e))
+            #self.log("Error recv new message")
+            #self.log(str(e))
             return None
 
     async def send_recv(self):
