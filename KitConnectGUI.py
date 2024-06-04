@@ -6,19 +6,21 @@ import os
 import datetime
 import sys
 import base64
+import re
 import requests
 from enum import Enum
 from threading import Thread
 
 # PySide6 Imports
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem, QDialog, QMessageBox
 from PySide6.QtCore import Qt, QSettings, QFile, QTextStream, QByteArray, QStandardPaths, QTimer, QUrl, QThreadPool
-from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QCursor
+from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QCursor, QMovie
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
 import Resources_rc
-from UI_Components import Ui_MainWindow
+from UI_Components import Ui_MainWindow, Ui_ReactDialog
 from td50x import TD50X
+from wled import WledWebsocket
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     
@@ -45,6 +47,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.chatbot_timer = QTimer(self)
         self.chatbot_timer.setInterval(2000)
         self.chatbot_timer.timeout.connect(self.check_send_chatbot)
+        self.react_rows = []
+        self.connected_gif = QMovie(":resources/img/connected.gif")
+        self.react_prev_connected = False
         self.menu_button_default_css = self.homeMenuButton.styleSheet()
         self.menu_button_active_css = """
             #menuFrame QToolButton {
@@ -143,7 +148,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Navigation Bar Button Signals
         self.homeMenuButton.clicked.connect(self.navBarButtonClicked)
         self.drumKitsMenuButton.clicked.connect(self.navBarButtonClicked)
-        self.spdxMenuButton.clicked.connect(self.navBarButtonClicked)
+        self.reactiveButton.clicked.connect(self.navBarButtonClicked)
         self.midiLogMenuButton.clicked.connect(self.navBarButtonClicked)
         self.appLogMenuButton.clicked.connect(self.navBarButtonClicked)
         self.settingsButton.clicked.connect(self.navBarButtonClicked)
@@ -156,6 +161,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.browseFileButton.clicked.connect(self.browseOBSFile)
         self.settingsChatBotCheckbox.stateChanged.connect(self.chatBotCheckBoxChanged)
         self.settingsChannelLineEdit.editingFinished.connect(self.twitchChannelChanged)
+        self.reactAddButton.clicked.connect(self.react_add_row)
+        self.reactEditButton.clicked.connect(self.react_edit_row)
+        self.reactDeleteButton.clicked.connect(self.react_del_row)
+        self.reactConnectButton.clicked.connect(self.reactConnectButtonClicked)
 
         # Set Midi Filter Checkbox Signals
         self.midiLogShowSysExCheckBox.stateChanged.connect(self.midiFilterChanged)
@@ -166,6 +175,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.midiLogShowControlChangeCheckBox.stateChanged.connect(self.midiFilterChanged)
         self.midiLogShowClockCheckBox.stateChanged.connect(self.midiFilterChanged)
         self.midiLogShowAllCheckBox.stateChanged.connect(self.midiFilterChanged)
+
+        # React Table
+        reactHeaderLabels = ["Drum", "Midi Event", "WLED Msg"]
+        self.reactTable.setColumnCount(len(reactHeaderLabels))
+        self.reactTable.setHorizontalHeaderLabels(reactHeaderLabels)
+        self.reactTable.horizontalHeader().setStretchLastSection(True)
+        self.reactTable.verticalHeader().hide()
 
         # TD-50X Object
         self.td50x = None
@@ -183,8 +199,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.setWindowIcon(default_icon)
 
-        # Finally, Show the UI
-        self.log("KitConnect started")
+        self.react_label_default_css = self.reactStatusLabel.styleSheet()
+        self.react_label_connected_css = "QLabel {font-style: italic; color: #c2ffb3;}"
+        self.react_label_disconnected_css = "QLabel {font-style: italic; color: grey;}"
+        self.reactStatusLabel.setStyleSheet(self.react_label_disconnected_css)
+        self.midi_types = TD50X.get_midi_types()
         self.log(self.font_path)
         self.log(f"Chat Command URL: {self.chat_command_url}")
         self.obs_webview_html = f"""
@@ -222,8 +241,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         <body>
         </html>
         """.strip()
+
+        # WLED WebSocket Client
+        self.reactWledUrlLineEdit.setText(self.settings.value(""))
+        self.wled_url = self.settings.value("wled_url", "")
+        self.wled_ws = None
+        self.wled_monitor_timer = QTimer()
+        self.wled_monitor_timer.timeout.connect(self.checkWledConnection)
+        self.wled_monitor_timer.start(5000)
+        self.wledConnect()
+
+        self.update_react_rows()
         self.obs_webview = QWebEngineView()
-        #self.obsGroupBox.layout().addWidget(self.obs_webview)
         self.obs_webview.setHtml(self.obs_webview_html)
         self.kitTableWidget.setColumnWidth(0, 200)
         self.kitTableWidget.setRowCount(100)
@@ -244,10 +273,64 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.log("Test MIDI Device TestPort Enabled")
         self.log(f"Midi Log Filter:")
         self.log(self.midi_log_filter)
-        self.status("KitConnect Started")
-        self.show()
         QTimer.singleShot(1000, self.refreshDevices)
 
+        # Finally, Show the UI
+        self.status("KitConnect Started")
+        self.show()
+        
+
+    def checkWledConnection(self):
+        if self.wled_ws is not None and self.wled_ws.connected():
+            if not self.react_prev_connected:
+                # Just Connected, Update UI
+                self.reactWledUrlLineEdit.setEnabled(False)
+                self.reactConnectButton.setText("Disconnect")
+                self.reactStatusLabel.setStyleSheet(self.react_label_connected_css)
+                self.reactStatusLabel.setText("Connected")
+                self.reactStatusImg.setMovie(self.connected_gif)
+                self.connected_gif.start()
+                self.react_prev_connected = True
+                self.status("Connected to WLED Websocket", 5000)
+        else:
+            if self.react_prev_connected:
+                # Just Disconnected, Update UI
+                self.reactWledUrlLineEdit.setEnabled(True)
+                self.reactConnectButton.setText("Connect")
+                self.reactStatusLabel.setStyleSheet(self.react_label_disconnected_css)
+                self.reactStatusLabel.setText("Not Connected")
+                self.reactStatusImg.clear()
+                self.react_prev_connected = False
+                self.status("Disconnected from WLED Websocket", 5000)
+
+    def wledDisconnect(self):
+        if self.wled_ws is not None and self.wled_ws.connected():
+            self.wled_ws.stop()
+            self.wled_ws.join()
+
+    def wledConnect(self):
+        self.wledDisconnect()
+        self.wled_url = self.settings.value("wled_url", None)
+        self.reactWledUrlLineEdit.setText(self.wled_url)
+        if self.wled_url is not None:
+            self.wled_ws = WledWebsocket(self.wled_url)
+            self.wled_ws.signals.log.connect(self.log)
+            self.wled_ws.start()
+
+    def reactConnectButtonClicked(self):
+        url = self.reactWledUrlLineEdit.text()
+        if len(url) > 0:
+            self.settings.setValue("wled_url", url)
+        if self.wled_ws is not None and self.wled_ws.connected():
+            self.wledDisconnect()
+        else:
+            self.wledConnect()
+        self.reactConnectButton.setText("Working...")
+        if self.react_prev_connected:
+            self.status("Disconnecting from WLED Websocket...", 5000)
+        else:
+            self.status("Connecting to WLED Websocket...", 5000)
+        
     def refreshDevices(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         if self.td50x: 
@@ -374,15 +457,81 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         except Exception as e:
             self.log("Error: "+str(e))
         self.obs_src_label.setText(out_str)
-        """
-        template_str = self.obs_webview_html
-        out_str = template_str.replace("{kit_num}", str(num))
-        out_str = out_str.replace("{kit_name}", name)
-        out_str = out_str.replace("{kit_subname}", subname)
-        self.obs_webview.setHtml(out_str)
-        self.obsGroupBox.repaint()
-        """
-        
+    
+    def react_add_row(self):
+        print("React Add Row")
+        dlg = ReactDialog(self)
+        if dlg.exec():
+            results = dlg.get_results()
+            if results is not None:
+                self.react_rows.append(results)
+                self.save_react_rows()
+                self.update_react_rows()
+
+    def react_edit_row(self):
+        print("React Edit Row")
+        selected = self.reactTable.currentRow()
+        if selected < 0:
+            return
+        dlg = ReactDialog(self, self.react_rows[selected])
+        if dlg.exec():
+            results = dlg.get_results()
+            if results is not None:
+                self.react_rows[selected] = results
+                self.save_react_rows()
+                self.update_react_rows()
+    
+    def react_del_row(self):
+        print("React Del Row")
+        selected = self.reactTable.currentRow()
+        if selected < 0:
+            return
+        self.react_rows.pop(selected)
+        self.save_react_rows()
+        self.update_react_rows()
+    
+    def save_react_rows(self):
+        self.settings.beginWriteArray("react_triggers")
+        for x in range(len(self.react_rows)):
+            self.settings.setArrayIndex(x)
+            row = self.react_rows[x]
+            self.settings.setValue("note_value", str(row[0].value))
+            self.settings.setValue("midi_event", str(row[1]))
+            message_b64 = base64.b64encode(row[2].encode("utf-8")).decode("utf-8")
+            self.settings.setValue("message_b64", message_b64)
+        self.settings.endArray()
+
+    def update_react_rows(self):
+        size = self.settings.beginReadArray("react_triggers")
+        self.react_rows = []
+        for i in range(0, size):
+            self.settings.setArrayIndex(i)
+            row = []
+            note_enum = TD50X.NoteNumbers.UNKNOWN
+            note_value = int(self.settings.value("note_value", "0"))
+            for note in TD50X.NoteNumbers:
+                if note.value == note_value:
+                    note_enum = note
+                    break
+            row.append(note_enum)
+            midi_value = self.settings.value("midi_event", "any")
+            row.append(midi_value)
+            message_b64 = self.settings.value("message_b64", "")
+            message_text = base64.b64decode(message_b64.encode("utf-8")).decode("utf-8")
+            row.append(message_text)
+            self.react_rows.append(row)
+        self.settings.endArray()
+        self.clear_react_table()
+        for x in range(len(self.react_rows)-1, -1, -1):
+            self.reactTable.insertRow(0)
+            self.reactTable.setItem(0, 0, QTableWidgetItem(self.react_rows[x][0].name))
+            self.reactTable.setItem(0, 1, QTableWidgetItem(self.react_rows[x][1]))
+            self.reactTable.setItem(0, 2, QTableWidgetItem(self.react_rows[x][2]))
+
+    def clear_react_table(self):
+        while self.reactTable.rowCount() > 0:
+            self.reactTable.removeRow(0)
+
     # Called every 2 secs on a timer
     def check_send_chatbot(self):
         if self.current_kit_num != self.last_kit_sent:
@@ -412,6 +561,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.midiLogMenuButton.setStyleSheet(self.menu_button_default_css)
         self.appLogMenuButton.setStyleSheet(self.menu_button_default_css)
         self.settingsButton.setStyleSheet(self.menu_button_default_css)
+        self.reactiveButton.setStyleSheet(self.menu_button_default_css)
 
     # Slot for Nav Bar Buttons
     def navBarButtonClicked(self):
@@ -423,9 +573,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         elif sender == self.drumKitsMenuButton:
             self.drumKitsMenuButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.kitsWidget)
-        elif sender == self.spdxMenuButton:
-            self.spdxMenuButton.setStyleSheet(self.menu_button_active_css)
-            self.stackedWidget.setCurrentWidget(self.spdxWidget)
         elif sender == self.midiLogMenuButton:
             self.midiLogMenuButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.midiWidget)
@@ -435,6 +582,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         elif sender == self.settingsButton:
             self.settingsButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.settingsWidget)
+        elif sender == self.reactiveButton:
+            self.reactiveButton.setStyleSheet(self.menu_button_active_css)
+            self.stackedWidget.setCurrentWidget(self.reactiveWidget)
         elif sender == self.githubButton:
             QDesktopServices.openUrl(self.repoUrl)
 
@@ -511,7 +661,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 if "all" in self.midi_log_filter:
                     self.midi_log_filter.remove("all")
-        #print(self.midi_log_filter)
 
     # Sent a MIDI Message
     def midi_send(self, msg):
@@ -520,7 +669,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Received a MIDI Message
     def midi_recv(self, msg):
         self.log_midi(msg, outgoing=False)
+        if self.wled_ws is None or not self.wled_ws.connected():
+            return
+        note = msg.dict().get("note",TD50X.NoteNumbers.UNKNOWN.value)
+        for react in self.react_rows:
+            #0: Note 1: midi  2: msg
+            if react[0].value == note or react[0] == TD50X.NoteNumbers.UNKNOWN.value:
+                if react[1] == msg.type or react[1] == "any":
+                    self.wled_ws.send(self.ws_var_replace(react[2], msg.dict()))
 
+    def ws_var_replace(self, ws_msg: str, midi_dict: dict):
+        ws_msg = ws_msg.replace("${VELOCITY}", str(midi_dict.get("velocity", 64)))
+        return ws_msg
+            
     def updateChatBotKit(self, key, channel, kit_num, kit_name, kit_subname):
         thread = Thread(target=self.updateChatBotKitWorker, args=(key, channel, kit_num, kit_name, kit_subname))
         thread.start()
@@ -578,10 +739,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.midi_log_entries += 1
 
     # Set a status message with optional timeout
-    def status(self, msg, timeout=0):
+    def status(self, msg, timeout_ms=0):
         self.statusLabel.setText(msg)
-        if timeout > 0:
-            QTimer.singleShot(timeout, lambda : self.check_clear_status(msg))
+        if timeout_ms > 0:
+            QTimer.singleShot(timeout_ms, lambda : self.check_clear_status(msg))
 
     # Check to see if status label needs to be cleared
     def check_clear_status(self, msg):
@@ -639,6 +800,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.settings.setValue(f"MidiLogFilter/All", "1")
         else:
             self.settings.setValue(f"MidiLogFilter/All", "0")
+        self.save_react_rows()
+        self.wled_url = self.reactWledUrlLineEdit.text()
+        self.settings.setValue("wled_url", self.wled_url)
         self.settings.sync()
         
     # App is closing, cleanup
@@ -649,6 +813,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Close TD50X Midi Connection
         self.closeTD50X()
         
+        # Close WLED Connection
+        self.wledDisconnect()
+
+        #Stop Timers
+        self.wled_monitor_timer.stop()
+        self.chatbot_timer.stop()
+
         # Remember the size and position of the GUI
         self.log("Saving Settings")
         self.saveSettings()
@@ -656,6 +827,51 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         QApplication.restoreOverrideCursor()
         self.log("Exiting")
         evt.accept()
+
+class ReactDialog(QDialog):
+    
+    def __init__(self, parent=None, values=None):
+        super().__init__(parent)
+        self.parent_obj = parent
+        self.ui = Ui_ReactDialog()
+        self.ui.setupUi(self)
+        for drum in TD50X.NoteNumbers:
+            self.ui.drumCombo.addItem(drum.name, drum)
+        midi_types = TD50X.get_midi_types()
+        for event in midi_types:
+            self.ui.midiEventCombo.addItem(event, event)
+        self.ui.okButton.clicked.connect(self.okButtonClick)
+        self.ui.cancelButton.clicked.connect(self.cancelButtonClick)
+        self.results = [None, None, None]
+        if values is not None:
+            self.ui.drumCombo.setCurrentText(values[0].name)
+            self.ui.midiEventCombo.setCurrentText(values[1])
+            self.ui.messageEdit.setPlainText(values[2])
+
+    def get_results(self):
+        if self.results is None:
+            return None
+        for result in self.results:
+            if result is None:
+                return None
+        return self.results
+            
+    def okButtonClick(self):
+        drum = self.ui.drumCombo.currentData()
+        event = self.ui.midiEventCombo.currentData()
+        message = self.ui.messageEdit.toPlainText()
+        try:
+            test_message = re.sub(r"\${.*?}", "0", message)
+            message_on_obj = json.loads(test_message)
+        except json.JSONDecodeError:
+            QMessageBox.critical(self, "Error", "Could not parse ON message as JSON.", QMessageBox.StandardButton.Ok)
+            self.results = [None, None, None]
+            return
+        self.results = [drum, event, message]
+        self.accept()
+
+    def cancelButtonClick(self):
+        self.reject()
 
 # Start the PySide6 App
 if __name__ == "__main__":

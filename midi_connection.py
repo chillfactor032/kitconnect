@@ -72,14 +72,20 @@ class TestPort(mido.ports.BaseIOPort):
     def random_msg(self):
         msg = None
         r = random.random()
-        drums = [36,38,48,42,46,49]
+        drums = [
+            38,
+            48,
+            45,
+            43,
+            36
+        ]
         kit_chng = [
             mido.Message('sysex', data=[65,16,0,0,0,0,7,18,4,36,0,0,76,117,100,119,105,103,32,83,117,112,114,97,72,121,98,114,105,100,32,32,32,32,32,32,32,32,76]),
             mido.Message('sysex', data=[65,16,0,0,0,0,7,18,4,56,0,0,83,116,97,114,32,66,117,98,105,110,103,97,87,97,108,110,117,116,32,32,32,32,32,32,32,32,76]),
             mido.Message('sysex', data=[65,16,0,0,0,0,7,18,4,76,0,0,65,105,114,70,114,111,109,26,65,115,105,97,84,97,98,108,97,32,32,32,32,32,32,32,32,32,32,32,76])
         ]
         notes = [
-            mido.Message("note_on", note=38),
+            mido.Message("note_on", note=38, velocity=random.randint(1,127)),
             mido.Message("note_off", note=38)
         ]
         other = [
@@ -87,9 +93,9 @@ class TestPort(mido.ports.BaseIOPort):
             mido.Message("polytouch", note=49, value=random.randint(0,127)),
             mido.Message("control_change", control=4, value=random.randint(0,127))
         ]
-        if r > 0.9:
+        if r > 0.95:
             msg = random.choice(kit_chng)
-        elif r > 0.6:
+        elif r > 0.9:
             msg = random.choice(other)
         else:
             msg = random.choice(notes)
@@ -99,7 +105,7 @@ class TestPort(mido.ports.BaseIOPort):
     def callback_monitor(self):
         """Callback function called when a message is recv"""
         while not self.closed:
-            time.sleep(random.random()*0.6)
+            time.sleep(random.random()*0.2)
             msg = self.random_msg()
             print(f"TestPort Send: [{msg}]")
             self.callback(msg)

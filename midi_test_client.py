@@ -7,6 +7,7 @@ from wled import WledWebsocket
 import sys
 import random
 import mido
+import json
 
 #Some Test Msgs
 test_msgs = [
@@ -39,11 +40,32 @@ def quit(code):
 
 
 #Wled websocket
-wled = WledWebsocket("wss://192.168.1.199/ws")
+wled = WledWebsocket("ws://192.168.1.199/ws")
 wled.start()
 
+colors = ["ff0000", "0dff00"]
+notes = {
+    TD50X.NoteNumbers.SNARE_HEAD: 0,
+    TD50X.NoteNumbers.TOM_1: 0,
+    TD50X.NoteNumbers.TOM_2: 0,
+}
+
 def msg_recv(msg):
-    print("callback")
+    if msg.type == 'note_on' and msg.note == TD50X.NoteNumbers.SNARE_HEAD.value:
+        print("Snare Hit: Sending WLED Message")
+        color = colors[notes[TD50X.NoteNumbers.SNARE_HEAD]]
+        notes[TD50X.NoteNumbers.SNARE_HEAD] = (notes[TD50X.NoteNumbers.SNARE_HEAD]+1) % 2
+        wled.send({"seg": {"id": "0", "i":[0, 10, color]}})
+    if msg.type == 'note_on' and msg.note == TD50X.NoteNumbers.TOM_1.value:
+        print("Tom 1 Hit: Sending WLED Message")
+        color = colors[notes[TD50X.NoteNumbers.TOM_1]]
+        notes[TD50X.NoteNumbers.TOM_1] = (notes[TD50X.NoteNumbers.TOM_1]+1) % 2
+        wled.send({"seg": {"id": "0", "i":[0, 10, color]}})
+    if msg.type == 'note_on' and msg.note == TD50X.NoteNumbers.TOM_2.value:
+        print("Tom 2 Hit: Sending WLED Message")
+        color = colors[notes[TD50X.NoteNumbers.TOM_2]]
+        notes[TD50X.NoteNumbers.TOM_2] = (notes[TD50X.NoteNumbers.TOM_2]+1) % 2
+        wled.send({"seg": {"id": "0", "i":[0, 10, color]}})
 
 #Get Midi Devices
 devices = TD50X.get_midi_devices()
@@ -69,7 +91,7 @@ while device is None:
     device = devices[selection]
 
 #Create MidiConnection
-td50x = TD50X(devices[selection], msg_callbacl=msg_recv)
+td50x = TD50X(devices[selection], msg_callback=msg_recv)
 td50x.midi_start()
 
 #Send / Recv Midi Packets

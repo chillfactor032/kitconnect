@@ -12,7 +12,6 @@ from enum import Enum
 
 #PySide6 Imports
 from PySide6.QtCore import Signal, QObject
-
 from midi_connection import MidiConnection
 
 class TD50X():
@@ -28,7 +27,6 @@ class TD50X():
     class Constants():
         ROLAND_ID = 0x41
         MODEL_ID = [0, 0, 0, 0, 7]
-
 
     class Status(Enum):
         UNKNOWN = 0
@@ -84,6 +82,7 @@ class TD50X():
         DT1 = 0x12
 
     class NoteNumbers(Enum):
+        UNKNOWN = 0
         KICK = 36
         SNARE_HEAD = 38
         SNARE_RIM = 40
@@ -353,6 +352,21 @@ class TD50X():
     def get_midi_channel(byte):
         return byte & 0x0f
     
+    @staticmethod
+    def get_midi_types():
+        midi_types = [
+            "any",
+            "note_on",
+            "note_off",
+            "control_change",
+            "program_change",
+            "polytouch",
+            "sysex",
+            "active_sensing",
+            "clock"
+        ]
+        return midi_types
+
     @staticmethod
     def checksum(msg):
         sum = 0

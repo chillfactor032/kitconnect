@@ -183,12 +183,11 @@ if(partial):
     print("=============================================\n")
     sys.exit(0)
 
-print("Compiling Binary")
+print("Enter the following command to compile binary...")
 
-if(target_env == "windows"):
-    cmd = f"pyinstaller --onefile --windowed --name=KitConnect --icon={version['ico']} KitConnectGUI.py"
-    print(cmd)
-    
+cmd = f"pyinstaller --onefile --windowed --name=KitConnect --icon={version['ico']} KitConnectGUI.py"
+print(cmd)
+"""    
 proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 for c in iter(lambda: proc.stdout.read(1), b''):
     sys.stdout.write(c.decode("utf-8"))
@@ -204,4 +203,8 @@ if(proc.returncode == 0):
 else:
     print("Error Compiling Binary")
 print("=============================================\n")
+"""
 
+print("\n=============================================")
+print("Done")
+print("=============================================\n")
