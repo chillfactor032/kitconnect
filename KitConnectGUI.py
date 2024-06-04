@@ -12,9 +12,9 @@ from enum import Enum
 from threading import Thread
 
 # PySide6 Imports
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem, QDialog, QMessageBox, QHeaderView
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem, QDialog, QMessageBox
 from PySide6.QtCore import Qt, QSettings, QFile, QTextStream, QByteArray, QStandardPaths, QTimer, QUrl, QThreadPool
-from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QCursor
+from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QCursor, QMovie
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
 import Resources_rc
@@ -48,6 +48,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.chatbot_timer.setInterval(2000)
         self.chatbot_timer.timeout.connect(self.check_send_chatbot)
         self.react_rows = []
+        self.connected_gif = QMovie(":resources/img/connected.gif")
+        self.react_prev_connected = False
         self.menu_button_default_css = self.homeMenuButton.styleSheet()
         self.menu_button_active_css = """
             #menuFrame QToolButton {
@@ -197,6 +199,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.setWindowIcon(default_icon)
 
+        self.react_label_default_css = self.reactStatusLabel.styleSheet()
+        self.react_label_connected_css = "QLabel {font-style: italic; color: #c2ffb3;}"
+        self.react_label_disconnected_css = "QLabel {font-style: italic; color: grey;}"
+        self.reactStatusLabel.setStyleSheet(self.react_label_disconnected_css)
         self.midi_types = TD50X.get_midi_types()
         self.log(self.font_path)
         self.log(f"Chat Command URL: {self.chat_command_url}")
@@ -276,11 +282,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def checkWledConnection(self):
         if self.wled_ws is not None and self.wled_ws.connected():
-            self.reactWledUrlLineEdit.setEnabled(False)
-            self.reactConnectButton.setText("Disconnect")
+            if not self.react_prev_connected:
+                # Just Connected, Update UI
+                self.reactWledUrlLineEdit.setEnabled(False)
+                self.reactConnectButton.setText("Disconnect")
+                self.reactStatusLabel.setStyleSheet(self.react_label_connected_css)
+                self.reactStatusLabel.setText("Connected")
+                self.reactStatusImg.setMovie(self.connected_gif)
+                self.connected_gif.start()
+                self.react_prev_connected = True
+                self.status("Connected to WLED Websocket", 5000)
         else:
-            self.reactWledUrlLineEdit.setEnabled(True)
-            self.reactConnectButton.setText("Connect")
+            if self.react_prev_connected:
+                # Just Disconnected, Update UI
+                self.reactWledUrlLineEdit.setEnabled(True)
+                self.reactConnectButton.setText("Connect")
+                self.reactStatusLabel.setStyleSheet(self.react_label_disconnected_css)
+                self.reactStatusLabel.setText("Not Connected")
+                self.reactStatusImg.clear()
+                self.react_prev_connected = False
+                self.status("Disconnected from WLED Websocket", 5000)
 
     def wledDisconnect(self):
         if self.wled_ws is not None and self.wled_ws.connected():
@@ -305,6 +326,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.wledConnect()
         self.reactConnectButton.setText("Working...")
+        if self.react_prev_connected:
+            self.status("Disconnecting from WLED Websocket...", 5000)
+        else:
+            self.status("Connecting to WLED Websocket...", 5000)
         
     def refreshDevices(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -714,10 +739,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.midi_log_entries += 1
 
     # Set a status message with optional timeout
-    def status(self, msg, timeout=0):
+    def status(self, msg, timeout_ms=0):
         self.statusLabel.setText(msg)
-        if timeout > 0:
-            QTimer.singleShot(timeout, lambda : self.check_clear_status(msg))
+        if timeout_ms > 0:
+            QTimer.singleShot(timeout_ms, lambda : self.check_clear_status(msg))
 
     # Check to see if status label needs to be cleared
     def check_clear_status(self, msg):

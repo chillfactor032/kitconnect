@@ -677,13 +677,13 @@ class Ui_MainWindow(object):
 "    border-radius: 6px;\n"
 "    margin-top: 6px;\n"
 "}")
-        self.horizontalLayout = QHBoxLayout(self.groupBox_6)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(-1, -1, 18, -1)
+        self.horizontalLayout_7 = QHBoxLayout(self.groupBox_6)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.horizontalLayout_7.setContentsMargins(-1, 4, 18, 4)
         self.label_11 = QLabel(self.groupBox_6)
         self.label_11.setObjectName(u"label_11")
 
-        self.horizontalLayout.addWidget(self.label_11)
+        self.horizontalLayout_7.addWidget(self.label_11)
 
         self.reactWledUrlLineEdit = QLineEdit(self.groupBox_6)
         self.reactWledUrlLineEdit.setObjectName(u"reactWledUrlLineEdit")
@@ -694,15 +694,45 @@ class Ui_MainWindow(object):
         self.reactWledUrlLineEdit.setSizePolicy(sizePolicy6)
         self.reactWledUrlLineEdit.setMinimumSize(QSize(180, 0))
 
-        self.horizontalLayout.addWidget(self.reactWledUrlLineEdit)
+        self.horizontalLayout_7.addWidget(self.reactWledUrlLineEdit)
 
-        self.horizontalSpacer = QSpacerItem(52, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(32, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer_3)
+
+        self.widget_2 = QWidget(self.groupBox_6)
+        self.widget_2.setObjectName(u"widget_2")
+        self.horizontalLayout = QHBoxLayout(self.widget_2)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalSpacer = QSpacerItem(36, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
-        self.horizontalSpacer_2 = QSpacerItem(51, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.reactStatusImg = QLabel(self.widget_2)
+        self.reactStatusImg.setObjectName(u"reactStatusImg")
+        sizePolicy6.setHeightForWidth(self.reactStatusImg.sizePolicy().hasHeightForWidth())
+        self.reactStatusImg.setSizePolicy(sizePolicy6)
+        self.reactStatusImg.setMinimumSize(QSize(29, 29))
+
+        self.horizontalLayout.addWidget(self.reactStatusImg)
+
+        self.reactStatusLabel = QLabel(self.widget_2)
+        self.reactStatusLabel.setObjectName(u"reactStatusLabel")
+        sizePolicy7 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.reactStatusLabel.sizePolicy().hasHeightForWidth())
+        self.reactStatusLabel.setSizePolicy(sizePolicy7)
+        self.reactStatusLabel.setMinimumSize(QSize(80, 29))
+
+        self.horizontalLayout.addWidget(self.reactStatusLabel)
+
+        self.horizontalSpacer_2 = QSpacerItem(36, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_2)
+
+
+        self.horizontalLayout_7.addWidget(self.widget_2)
 
         self.reactConnectButton = QToolButton(self.groupBox_6)
         self.reactConnectButton.setObjectName(u"reactConnectButton")
@@ -727,7 +757,7 @@ class Ui_MainWindow(object):
         self.reactConnectButton.setIcon(icon8)
         self.reactConnectButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
-        self.horizontalLayout.addWidget(self.reactConnectButton)
+        self.horizontalLayout_7.addWidget(self.reactConnectButton)
 
 
         self.verticalLayout_15.addWidget(self.groupBox_6)
@@ -766,11 +796,11 @@ class Ui_MainWindow(object):
 
         self.widget = QWidget(self.groupBox_3)
         self.widget.setObjectName(u"widget")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.widget.sizePolicy().hasHeightForWidth())
-        self.widget.setSizePolicy(sizePolicy7)
+        sizePolicy8 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy8.setHorizontalStretch(0)
+        sizePolicy8.setVerticalStretch(0)
+        sizePolicy8.setHeightForWidth(self.widget.sizePolicy().hasHeightForWidth())
+        self.widget.setSizePolicy(sizePolicy8)
         self.widget.setMinimumSize(QSize(100, 0))
         self.verticalLayout_16 = QVBoxLayout(self.widget)
         self.verticalLayout_16.setObjectName(u"verticalLayout_16")
@@ -871,8 +901,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.midiFilterFrame = QWidget(self.midiWidget)
         self.midiFilterFrame.setObjectName(u"midiFilterFrame")
-        sizePolicy7.setHeightForWidth(self.midiFilterFrame.sizePolicy().hasHeightForWidth())
-        self.midiFilterFrame.setSizePolicy(sizePolicy7)
+        sizePolicy8.setHeightForWidth(self.midiFilterFrame.sizePolicy().hasHeightForWidth())
+        self.midiFilterFrame.setSizePolicy(sizePolicy8)
         self.midiFilterFrame.setMinimumSize(QSize(150, 0))
         self.verticalLayout_8 = QVBoxLayout(self.midiFilterFrame)
         self.verticalLayout_8.setSpacing(9)
@@ -880,11 +910,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.setContentsMargins(-1, -1, -1, 0)
         self.msgTypeGroupBox = QGroupBox(self.midiFilterFrame)
         self.msgTypeGroupBox.setObjectName(u"msgTypeGroupBox")
-        sizePolicy8 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        sizePolicy8.setHorizontalStretch(0)
-        sizePolicy8.setVerticalStretch(0)
-        sizePolicy8.setHeightForWidth(self.msgTypeGroupBox.sizePolicy().hasHeightForWidth())
-        self.msgTypeGroupBox.setSizePolicy(sizePolicy8)
+        sizePolicy9 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy9.setHorizontalStretch(0)
+        sizePolicy9.setVerticalStretch(0)
+        sizePolicy9.setHeightForWidth(self.msgTypeGroupBox.sizePolicy().hasHeightForWidth())
+        self.msgTypeGroupBox.setSizePolicy(sizePolicy9)
         self.msgTypeGroupBox.setStyleSheet(u"QGroupBox{\n"
 "	border: 1px solid white;\n"
 "}\n"
@@ -1192,11 +1222,11 @@ class Ui_MainWindow(object):
 
         self.statusBarFrame = QFrame(self.mainFrame)
         self.statusBarFrame.setObjectName(u"statusBarFrame")
-        sizePolicy9 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        sizePolicy9.setHorizontalStretch(0)
-        sizePolicy9.setVerticalStretch(0)
-        sizePolicy9.setHeightForWidth(self.statusBarFrame.sizePolicy().hasHeightForWidth())
-        self.statusBarFrame.setSizePolicy(sizePolicy9)
+        sizePolicy10 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy10.setHorizontalStretch(0)
+        sizePolicy10.setVerticalStretch(0)
+        sizePolicy10.setHeightForWidth(self.statusBarFrame.sizePolicy().hasHeightForWidth())
+        self.statusBarFrame.setSizePolicy(sizePolicy10)
         self.statusBarFrame.setMinimumSize(QSize(0, 30))
         self.statusBarFrame.setFrameShape(QFrame.StyledPanel)
         self.statusBarFrame.setFrameShadow(QFrame.Raised)
@@ -1263,6 +1293,8 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Subname", None));
         self.groupBox_6.setTitle(QCoreApplication.translate("MainWindow", u"Reactive Drum Settings", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"WLED URL:", None))
+        self.reactStatusImg.setText("")
+        self.reactStatusLabel.setText(QCoreApplication.translate("MainWindow", u"Not Connected", None))
         self.reactConnectButton.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Drum / WLED Mappings", None))
         self.reactAddButton.setText(QCoreApplication.translate("MainWindow", u" Add", None))

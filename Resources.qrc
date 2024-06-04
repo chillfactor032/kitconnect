@@ -30,5 +30,6 @@
     <file>resources/img/icons/x-square.svg</file>
     <file>resources/img/icons/edit.svg</file>
     <file>resources/img/icons/zap.svg</file>
+    <file>resources/img/connected.gif</file>
 </qresource>
 </RCC>
