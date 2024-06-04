@@ -1395,6 +1395,9 @@ QGroupBox {
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
                  <item>
                   <widget class="QTableWidget" name="reactTable">
+                   <property name="editTriggers">
+                    <set>QAbstractItemView::NoEditTriggers</set>
+                   </property>
                    <property name="selectionMode">
                     <enum>QAbstractItemView::SingleSelection</enum>
                    </property>

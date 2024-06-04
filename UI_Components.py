@@ -788,6 +788,7 @@ class Ui_MainWindow(object):
         if (self.reactTable.columnCount() < 4):
             self.reactTable.setColumnCount(4)
         self.reactTable.setObjectName(u"reactTable")
+        self.reactTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.reactTable.setSelectionMode(QAbstractItemView.SingleSelection)
         self.reactTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.reactTable.setColumnCount(4)
