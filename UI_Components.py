@@ -765,6 +765,7 @@ class Ui_MainWindow(object):
         icon8 = QIcon()
         icon8.addFile(u":/resources/img/icons/save.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.reactSaveButton.setIcon(icon8)
+        self.reactSaveButton.setIconSize(QSize(24, 24))
         self.reactSaveButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
         self.horizontalLayout_7.addWidget(self.reactSaveButton)

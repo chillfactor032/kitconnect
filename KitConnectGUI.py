@@ -254,7 +254,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.react_udp_client = UdpClient(self.react_host, self.react_port)
         self.react_udp_client.signals.log.connect(self.log)
         self.react_udp_client.start()
-        
+
+        self.reactStatusLabel.hide()
         self.update_react_rows()
         self.obs_webview = QWebEngineView()
         self.obs_webview.setHtml(self.obs_webview_html)
