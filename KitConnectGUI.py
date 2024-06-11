@@ -637,6 +637,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if react[0].value == note or react[0] == TD50X.NoteNumbers.UNKNOWN.value:
                 if react[1] == msg.type or react[1] == "any":
                     self.react_udp_client.send(self.ws_var_replace(react[2], msg.dict()))
+                else:
+                    if react[1] == "choke" and msg.type == "polytouch" and msg.value == 127:
+                        self.react_udp_client.send(self.ws_var_replace(react[2], msg.dict()))
 
     def ws_var_replace(self, ws_msg: str, midi_dict: dict):
         ws_msg = ws_msg.replace("${VELOCITY}", str(midi_dict.get("velocity", 64)))
@@ -800,6 +803,7 @@ class ReactDialog(QDialog):
         midi_types = TD50X.get_midi_types()
         for event in midi_types:
             self.ui.midiEventCombo.addItem(event, event)
+        self.ui.midiEventCombo.addItem("choke","choke")
         self.ui.okButton.clicked.connect(self.okButtonClick)
         self.ui.cancelButton.clicked.connect(self.cancelButtonClick)
         self.results = [None, None, None]
