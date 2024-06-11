@@ -3,7 +3,7 @@ from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 from td50x import TD50X
-from wled import WledWebsocket
+from connectors import WledWebsocket
 import sys
 import random
 import mido

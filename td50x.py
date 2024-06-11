@@ -334,7 +334,7 @@ class TD50X():
         elif dict_obj["type"] == "control_change":
             return f"[{dict_obj['type']} channel={dict_obj['channel']} note={dict_obj['control']} value={dict_obj['value']}]"
         elif dict_obj["type"] == "polytouch":
-            return f"[{dict_obj['type']} channel={dict_obj['channel']} note={dict_obj['control']} value={dict_obj['value']}]"
+            return f"[{dict_obj['type']} channel={dict_obj['channel']} note={dict_obj['note']} value={dict_obj['value']}]"
         elif dict_obj["type"] == "sysex":
             hex_data = msg.hex()
             return f"[{dict_obj['type']} data={hex_data}]"

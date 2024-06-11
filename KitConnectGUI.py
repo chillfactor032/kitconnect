@@ -12,15 +12,15 @@ from enum import Enum
 from threading import Thread
 
 # PySide6 Imports
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem, QDialog, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QStyle, QMessageBox, QTableWidgetItem, QDialog, QMessageBox 
 from PySide6.QtCore import Qt, QSettings, QFile, QTextStream, QByteArray, QStandardPaths, QTimer, QUrl, QThreadPool
-from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QCursor, QMovie
+from PySide6.QtGui import QPixmap, QIcon, QDesktopServices, QCursor, QMovie, QIntValidator
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
 import Resources_rc
 from UI_Components import Ui_MainWindow, Ui_ReactDialog
 from td50x import TD50X
-from wled import WledWebsocket
+from connectors import UdpClient
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     
@@ -88,7 +88,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         font_file.open(QFile.ReadOnly)
         font_file_bytes = font_file.readAll()
         self.font_b64 = bytes(font_file_bytes.toBase64()).decode()
-
         self.config_dir = QStandardPaths.writableLocation(QStandardPaths.ConfigLocation)
         self.documents = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
         if(not os.path.isdir(self.config_dir)):
@@ -132,7 +131,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.midiLogShowNoteOffCheckBox.isChecked():
             self.midi_log_filter.append("note_off")
         if self.midiLogShowPolyCheckBox.isChecked():
-            self.midi_log_filter.append("poly")
+            self.midi_log_filter.append("polytouch")
         if self.midiLogShowProgChangeCheckBox.isChecked():
             self.midi_log_filter.append("program_change")
         if self.midiLogShowControlChangeCheckBox.isChecked():
@@ -164,7 +163,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reactAddButton.clicked.connect(self.react_add_row)
         self.reactEditButton.clicked.connect(self.react_edit_row)
         self.reactDeleteButton.clicked.connect(self.react_del_row)
-        self.reactConnectButton.clicked.connect(self.reactConnectButtonClicked)
+        self.reactSaveButton.clicked.connect(self.reactSaveButtonClicked)
 
         # Set Midi Filter Checkbox Signals
         self.midiLogShowSysExCheckBox.stateChanged.connect(self.midiFilterChanged)
@@ -242,15 +241,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         </html>
         """.strip()
 
-        # WLED WebSocket Client
-        self.reactWledUrlLineEdit.setText(self.settings.value(""))
-        self.wled_url = self.settings.value("wled_url", "")
-        self.wled_ws = None
-        self.wled_monitor_timer = QTimer()
-        self.wled_monitor_timer.timeout.connect(self.checkWledConnection)
-        self.wled_monitor_timer.start(5000)
-        self.wledConnect()
-
+        # React UDP Client
+        self.react_host = self.settings.value("react_host", "")
+        try:
+            self.react_port = int(self.settings.value("react_port", "21324"))
+        except ValueError:
+            self.react_port = 21324
+        self.reactHostEdit.setText(self.react_host)
+        self.reactPortEdit.setText(str(self.react_port))
+        self.react_port_int_validator = QIntValidator(0, 65535, self)
+        self.reactPortEdit.setValidator(self.react_port_int_validator)
+        self.react_udp_client = UdpClient(self.react_host, self.react_port)
+        self.react_udp_client.signals.log.connect(self.log)
+        self.react_udp_client.start()
+        
         self.update_react_rows()
         self.obs_webview = QWebEngineView()
         self.obs_webview.setHtml(self.obs_webview_html)
@@ -280,56 +284,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.show()
         
 
-    def checkWledConnection(self):
-        if self.wled_ws is not None and self.wled_ws.connected():
-            if not self.react_prev_connected:
-                # Just Connected, Update UI
-                self.reactWledUrlLineEdit.setEnabled(False)
-                self.reactConnectButton.setText("Disconnect")
-                self.reactStatusLabel.setStyleSheet(self.react_label_connected_css)
-                self.reactStatusLabel.setText("Connected")
-                self.reactStatusImg.setMovie(self.connected_gif)
-                self.connected_gif.start()
-                self.react_prev_connected = True
-                self.status("Connected to WLED Websocket", 5000)
-        else:
-            if self.react_prev_connected:
-                # Just Disconnected, Update UI
-                self.reactWledUrlLineEdit.setEnabled(True)
-                self.reactConnectButton.setText("Connect")
-                self.reactStatusLabel.setStyleSheet(self.react_label_disconnected_css)
-                self.reactStatusLabel.setText("Not Connected")
-                self.reactStatusImg.clear()
-                self.react_prev_connected = False
-                self.status("Disconnected from WLED Websocket", 5000)
-
-    def wledDisconnect(self):
-        if self.wled_ws is not None and self.wled_ws.connected():
-            self.wled_ws.stop()
-            self.wled_ws.join()
-
-    def wledConnect(self):
-        self.wledDisconnect()
-        self.wled_url = self.settings.value("wled_url", None)
-        self.reactWledUrlLineEdit.setText(self.wled_url)
-        if self.wled_url is not None:
-            self.wled_ws = WledWebsocket(self.wled_url)
-            self.wled_ws.signals.log.connect(self.log)
-            self.wled_ws.start()
-
-    def reactConnectButtonClicked(self):
-        url = self.reactWledUrlLineEdit.text()
-        if len(url) > 0:
-            self.settings.setValue("wled_url", url)
-        if self.wled_ws is not None and self.wled_ws.connected():
-            self.wledDisconnect()
-        else:
-            self.wledConnect()
-        self.reactConnectButton.setText("Working...")
-        if self.react_prev_connected:
-            self.status("Disconnecting from WLED Websocket...", 5000)
-        else:
-            self.status("Connecting to WLED Websocket...", 5000)
+    def reactSaveButtonClicked(self):
+        self.react_host = self.reactHostEdit.text()
+        self.react_port = int(self.reactPortEdit.text())
+        self.settings.setValue("react_host", self.react_host)
+        self.settings.setValue("react_port", self.react_port)
+        self.settings.sync()
+        self.react_udp_client.set_host(self.react_host, self.react_port)
+        self.status("Saved React Host and Port...", 5000)
         
     def refreshDevices(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -669,14 +631,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Received a MIDI Message
     def midi_recv(self, msg):
         self.log_midi(msg, outgoing=False)
-        if self.wled_ws is None or not self.wled_ws.connected():
-            return
         note = msg.dict().get("note",TD50X.NoteNumbers.UNKNOWN.value)
         for react in self.react_rows:
-            #0: Note 1: midi  2: msg
             if react[0].value == note or react[0] == TD50X.NoteNumbers.UNKNOWN.value:
                 if react[1] == msg.type or react[1] == "any":
-                    self.wled_ws.send(self.ws_var_replace(react[2], msg.dict()))
+                    self.react_udp_client.send(self.ws_var_replace(react[2], msg.dict()))
 
     def ws_var_replace(self, ws_msg: str, midi_dict: dict):
         ws_msg = ws_msg.replace("${VELOCITY}", str(midi_dict.get("velocity", 64)))
@@ -801,8 +760,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.settings.setValue(f"MidiLogFilter/All", "0")
         self.save_react_rows()
-        self.wled_url = self.reactWledUrlLineEdit.text()
-        self.settings.setValue("wled_url", self.wled_url)
+        self.react_url = self.reactHostEdit.text()
+        self.settings.setValue("react_url", self.react_url)
         self.settings.sync()
         
     # App is closing, cleanup
@@ -813,11 +772,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Close TD50X Midi Connection
         self.closeTD50X()
         
-        # Close WLED Connection
-        self.wledDisconnect()
+        # Close Reactive UDP Connection
+        self.react_udp_client.stop()
+        self.react_udp_client.join()
 
         #Stop Timers
-        self.wled_monitor_timer.stop()
         self.chatbot_timer.stop()
 
         # Remember the size and position of the GUI

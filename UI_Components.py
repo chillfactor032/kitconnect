@@ -679,32 +679,42 @@ class Ui_MainWindow(object):
 "}")
         self.horizontalLayout_7 = QHBoxLayout(self.groupBox_6)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(-1, 4, 18, 4)
+        self.horizontalLayout_7.setContentsMargins(-1, -1, 18, -1)
         self.label_11 = QLabel(self.groupBox_6)
         self.label_11.setObjectName(u"label_11")
 
         self.horizontalLayout_7.addWidget(self.label_11)
 
-        self.reactWledUrlLineEdit = QLineEdit(self.groupBox_6)
-        self.reactWledUrlLineEdit.setObjectName(u"reactWledUrlLineEdit")
+        self.reactHostEdit = QLineEdit(self.groupBox_6)
+        self.reactHostEdit.setObjectName(u"reactHostEdit")
         sizePolicy6 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy6.setHorizontalStretch(0)
         sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.reactWledUrlLineEdit.sizePolicy().hasHeightForWidth())
-        self.reactWledUrlLineEdit.setSizePolicy(sizePolicy6)
-        self.reactWledUrlLineEdit.setMinimumSize(QSize(180, 0))
+        sizePolicy6.setHeightForWidth(self.reactHostEdit.sizePolicy().hasHeightForWidth())
+        self.reactHostEdit.setSizePolicy(sizePolicy6)
+        self.reactHostEdit.setMinimumSize(QSize(120, 0))
 
-        self.horizontalLayout_7.addWidget(self.reactWledUrlLineEdit)
+        self.horizontalLayout_7.addWidget(self.reactHostEdit)
 
-        self.horizontalSpacer_3 = QSpacerItem(32, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.label_13 = QLabel(self.groupBox_6)
+        self.label_13.setObjectName(u"label_13")
+        self.label_13.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.horizontalLayout_7.addItem(self.horizontalSpacer_3)
+        self.horizontalLayout_7.addWidget(self.label_13)
+
+        self.reactPortEdit = QLineEdit(self.groupBox_6)
+        self.reactPortEdit.setObjectName(u"reactPortEdit")
+        sizePolicy6.setHeightForWidth(self.reactPortEdit.sizePolicy().hasHeightForWidth())
+        self.reactPortEdit.setSizePolicy(sizePolicy6)
+        self.reactPortEdit.setMinimumSize(QSize(60, 0))
+
+        self.horizontalLayout_7.addWidget(self.reactPortEdit)
 
         self.widget_2 = QWidget(self.groupBox_6)
         self.widget_2.setObjectName(u"widget_2")
         self.horizontalLayout = QHBoxLayout(self.widget_2)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer = QSpacerItem(36, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
@@ -734,10 +744,10 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_7.addWidget(self.widget_2)
 
-        self.reactConnectButton = QToolButton(self.groupBox_6)
-        self.reactConnectButton.setObjectName(u"reactConnectButton")
-        self.reactConnectButton.setMinimumSize(QSize(90, 0))
-        self.reactConnectButton.setStyleSheet(u"QToolButton {\n"
+        self.reactSaveButton = QToolButton(self.groupBox_6)
+        self.reactSaveButton.setObjectName(u"reactSaveButton")
+        self.reactSaveButton.setMinimumSize(QSize(90, 0))
+        self.reactSaveButton.setStyleSheet(u"QToolButton {\n"
 "	border-width: 1px;\n"
 "	border-width: 1px;\n"
 "	border-width: 1px;\n"
@@ -753,11 +763,11 @@ class Ui_MainWindow(object):
 "	margin-top: 3px;\n"
 "}")
         icon8 = QIcon()
-        icon8.addFile(u":/resources/img/icons/zap.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.reactConnectButton.setIcon(icon8)
-        self.reactConnectButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        icon8.addFile(u":/resources/img/icons/save.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.reactSaveButton.setIcon(icon8)
+        self.reactSaveButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
-        self.horizontalLayout_7.addWidget(self.reactConnectButton)
+        self.horizontalLayout_7.addWidget(self.reactSaveButton)
 
 
         self.verticalLayout_15.addWidget(self.groupBox_6)
@@ -1293,10 +1303,11 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem1 = self.kitTableWidget.horizontalHeaderItem(1)
         ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Subname", None));
         self.groupBox_6.setTitle(QCoreApplication.translate("MainWindow", u"Reactive Drum Settings", None))
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"WLED URL:", None))
+        self.label_11.setText(QCoreApplication.translate("MainWindow", u"UDP Host:", None))
+        self.label_13.setText(QCoreApplication.translate("MainWindow", u"Port:", None))
         self.reactStatusImg.setText("")
         self.reactStatusLabel.setText(QCoreApplication.translate("MainWindow", u"Not Connected", None))
-        self.reactConnectButton.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
+        self.reactSaveButton.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Drum / WLED Mappings", None))
         self.reactAddButton.setText(QCoreApplication.translate("MainWindow", u" Add", None))
         self.reactEditButton.setText(QCoreApplication.translate("MainWindow", u" Edit", None))

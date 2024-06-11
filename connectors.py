@@ -5,6 +5,7 @@ import time
 import asyncio
 import json
 import websockets
+import socket
 from PySide6.QtCore import QObject, Signal
 
 class WledWebsocket(threading.Thread):
@@ -92,6 +93,60 @@ class WledWebsocket(threading.Thread):
         loop.run_until_complete(self.send_recv())
         loop.run_until_complete(loop.shutdown_asyncgens())
         self._connected = False
+
+class UdpClient(threading.Thread):
+
+    class Signals(QObject):
+        log = Signal(str)
+
+    def __init__(self, host, port, **kwargs):
+        super().__init__()
+        self.host = host
+        self.port = port
+        self._stopped = False
+        self.outbox = queue.SimpleQueue()
+        self.signals = self.Signals()
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.ip = ""
+        
+    def set_host(self, host:str, port:int):
+        self.host = host
+        self.port = port
+        self.ip = ""
+        self.log(f"UDP Client: Setting Host [{self.host}:{self.port}]")
+        try:
+            info = socket.getaddrinfo(self.host, self.port, proto=socket.AF_INET)
+        except socket.gaierror as e:
+            self.log(f"Error setting UDP Address [{self.host}:{self.port}]")
+            self.log(e)
+            return False
+        if len(info) > 0:
+            self.info = info[0]
+            self.ip = self.info[4][0]
+            return True
+        return False
+
+    def stop(self):
+        self._stopped = True
+
+    def send(self, msg):
+        self.outbox.put(msg)
+
+    def run(self):
+        self.log("UDP Client Starting")
+        if self.ip == "":
+            self.set_host(self.host, self.port)
+        while not self._stopped:
+            if not self.outbox.empty():
+                msg = self.outbox.get_nowait()
+                try:
+                    self.socket.sendto(msg.encode(), (self.host, self.port))
+                except socket.gaierror:
+                    pass
+        self.log("UDP Client Stopped")
+
+    def log(self, msg):
+        self.signals.log.emit(msg)
 
 if __name__ == "__main__":
     pass
