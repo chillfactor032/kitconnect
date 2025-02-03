@@ -1,14 +1,20 @@
+import sys
+from midi_connection import MidiConnection
 
-import mido
-from os import environ
+#Vars
+device = None
+selection = -1
 
-#Suppress the hello message from PyGame
-environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
-mido.set_backend('mido.backends.pygame')
+#Functions
+def quit(code):
+    print(f"Exit Code:{code}")
+    sys.exit(code)
+
+def msg_recv(msg):
+    print(msg.dict())
 
 #Get Midi Devices
 devices = MidiConnection.get_devices()
-devices.append("TestPort")
 
 #Select Midi Device
 while device is None:
@@ -28,3 +34,15 @@ while device is None:
         quit(0)
     print(f"You selected [{selection}] {devices[selection]}\n")
     device = devices[selection]
+
+#Create MidiConnection
+midi = MidiConnection(devices[selection], msg_recv, None)
+midi.start()
+
+try:
+    input("Press any key to quit\n")
+except KeyboardInterrupt:
+    pass
+
+midi.stop()
+quit(0)
