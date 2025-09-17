@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MainWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.1
+## Created by: Qt User Interface Compiler version 6.5.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,12 +15,12 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QComboBox,
-    QFrame, QGridLayout, QGroupBox, QHBoxLayout,
-    QHeaderView, QLabel, QLineEdit, QMainWindow,
-    QPlainTextEdit, QSizePolicy, QSpacerItem, QStackedWidget,
-    QTableWidget, QTableWidgetItem, QTextBrowser, QToolButton,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
+    QGridLayout, QGroupBox, QHBoxLayout, QHeaderView,
+    QLabel, QLineEdit, QMainWindow, QPlainTextEdit,
+    QSizePolicy, QSpacerItem, QStackedWidget, QTableWidget,
+    QTableWidgetItem, QTextBrowser, QToolButton, QVBoxLayout,
+    QWidget)
 import Resources_rc
 
 class Ui_MainWindow(object):
@@ -269,28 +269,15 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addWidget(self.drumKitsMenuButton)
 
-        self.reactiveButton = QToolButton(self.frame_2)
-        self.reactiveButton.setObjectName(u"reactiveButton")
-        sizePolicy2.setHeightForWidth(self.reactiveButton.sizePolicy().hasHeightForWidth())
-        self.reactiveButton.setSizePolicy(sizePolicy2)
-        self.reactiveButton.setFont(font)
-        icon2 = QIcon()
-        icon2.addFile(u":/resources/img/icons/sun.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.reactiveButton.setIcon(icon2)
-        self.reactiveButton.setIconSize(QSize(24, 24))
-        self.reactiveButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-        self.verticalLayout_4.addWidget(self.reactiveButton)
-
         self.midiLogMenuButton = QToolButton(self.frame_2)
         self.midiLogMenuButton.setObjectName(u"midiLogMenuButton")
         sizePolicy2.setHeightForWidth(self.midiLogMenuButton.sizePolicy().hasHeightForWidth())
         self.midiLogMenuButton.setSizePolicy(sizePolicy2)
         self.midiLogMenuButton.setFont(font)
         self.midiLogMenuButton.setStyleSheet(u"")
-        icon3 = QIcon()
-        icon3.addFile(u":/resources/img/icons/headphones.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.midiLogMenuButton.setIcon(icon3)
+        icon2 = QIcon()
+        icon2.addFile(u":/resources/img/icons/headphones.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.midiLogMenuButton.setIcon(icon2)
         self.midiLogMenuButton.setIconSize(QSize(24, 24))
         self.midiLogMenuButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -301,9 +288,9 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.appLogMenuButton.sizePolicy().hasHeightForWidth())
         self.appLogMenuButton.setSizePolicy(sizePolicy2)
         self.appLogMenuButton.setFont(font)
-        icon4 = QIcon()
-        icon4.addFile(u":/resources/img/icons/file-text.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.appLogMenuButton.setIcon(icon4)
+        icon3 = QIcon()
+        icon3.addFile(u":/resources/img/icons/file-text.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.appLogMenuButton.setIcon(icon3)
         self.appLogMenuButton.setIconSize(QSize(24, 24))
         self.appLogMenuButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -330,9 +317,9 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.settingsButton.sizePolicy().hasHeightForWidth())
         self.settingsButton.setSizePolicy(sizePolicy2)
         self.settingsButton.setFont(font)
-        icon5 = QIcon()
-        icon5.addFile(u":/resources/img/icons/settings.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.settingsButton.setIcon(icon5)
+        icon4 = QIcon()
+        icon4.addFile(u":/resources/img/icons/settings.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.settingsButton.setIcon(icon4)
         self.settingsButton.setIconSize(QSize(24, 24))
         self.settingsButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -343,9 +330,9 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.githubButton.sizePolicy().hasHeightForWidth())
         self.githubButton.setSizePolicy(sizePolicy2)
         self.githubButton.setFont(font)
-        icon6 = QIcon()
-        icon6.addFile(u":/resources/img/icons/github.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.githubButton.setIcon(icon6)
+        icon5 = QIcon()
+        icon5.addFile(u":/resources/img/icons/github.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.githubButton.setIcon(icon5)
         self.githubButton.setIconSize(QSize(24, 24))
         self.githubButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -447,9 +434,9 @@ class Ui_MainWindow(object):
 "	margin-left: 3px;\n"
 "	margin-top: 3px;\n"
 "}")
-        icon7 = QIcon()
-        icon7.addFile(u":/resources/img/icons/refresh-cw.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.refreshKitDataButton.setIcon(icon7)
+        icon6 = QIcon()
+        icon6.addFile(u":/resources/img/icons/refresh-cw.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.refreshKitDataButton.setIcon(icon6)
         self.refreshKitDataButton.setIconSize(QSize(24, 24))
         self.refreshKitDataButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.obsGroupBox = QGroupBox(self.curKitGroupBox)
@@ -482,142 +469,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addWidget(self.curKitGroupBox)
 
         self.stackedWidget.addWidget(self.homeWidget)
-        self.spdxWidget = QWidget()
-        self.spdxWidget.setObjectName(u"spdxWidget")
-        self.verticalLayout_14 = QVBoxLayout(self.spdxWidget)
-        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
-        self.spdxDeviceGroupBox = QGroupBox(self.spdxWidget)
-        self.spdxDeviceGroupBox.setObjectName(u"spdxDeviceGroupBox")
-        sizePolicy2.setHeightForWidth(self.spdxDeviceGroupBox.sizePolicy().hasHeightForWidth())
-        self.spdxDeviceGroupBox.setSizePolicy(sizePolicy2)
-        self.spdxDeviceGroupBox.setMinimumSize(QSize(0, 70))
-        self.spdxDeviceGroupBox.setStyleSheet(u"QGroupBox{\n"
-"	border: 1px solid white;\n"
-"	color: #ffffff;\n"
-"}\n"
-"\n"
-"QGroupBox::title {\n"
-"    subcontrol-origin: margin;\n"
-"    left: 7px;\n"
-"	top: -10ox;\n"
-"    padding: 0px 5px 0px 5px;\n"
-"}\n"
-"\n"
-"QGroupBox {\n"
-"    font: bold;\n"
-"    border: 1px solid silver;\n"
-"    border-radius: 6px;\n"
-"    margin-top: 6px;\n"
-"}")
-        self.horizontalLayout_6 = QHBoxLayout(self.spdxDeviceGroupBox)
-        self.horizontalLayout_6.setSpacing(20)
-        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.horizontalLayout_6.setContentsMargins(-1, -1, 20, -1)
-        self.spdxDeviceComboBox = QComboBox(self.spdxDeviceGroupBox)
-        self.spdxDeviceComboBox.addItem("")
-        self.spdxDeviceComboBox.setObjectName(u"spdxDeviceComboBox")
-        sizePolicy2.setHeightForWidth(self.spdxDeviceComboBox.sizePolicy().hasHeightForWidth())
-        self.spdxDeviceComboBox.setSizePolicy(sizePolicy2)
-        self.spdxDeviceComboBox.setMinimumSize(QSize(400, 20))
-
-        self.horizontalLayout_6.addWidget(self.spdxDeviceComboBox)
-
-        self.refreshSPDXDevicesButton = QToolButton(self.spdxDeviceGroupBox)
-        self.refreshSPDXDevicesButton.setObjectName(u"refreshSPDXDevicesButton")
-        self.refreshSPDXDevicesButton.setMinimumSize(QSize(100, 25))
-        self.refreshSPDXDevicesButton.setStyleSheet(u"QToolButton {\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-" 	border-radius: 5px;\n"
-"}\n"
-"\n"
-"QToolButton:pressed\n"
-"{\n"
-"	border-style:solid;\n"
-"	border-width:1px;\n"
-"	border-color: #ffffff;\n"
-"	margin-left: 3px;\n"
-"	margin-top: 3px;\n"
-"}")
-        self.refreshSPDXDevicesButton.setIcon(icon7)
-        self.refreshSPDXDevicesButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-        self.horizontalLayout_6.addWidget(self.refreshSPDXDevicesButton)
-
-
-        self.verticalLayout_14.addWidget(self.spdxDeviceGroupBox)
-
-        self.groupBox = QGroupBox(self.spdxWidget)
-        self.groupBox.setObjectName(u"groupBox")
-        sizePolicy2.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
-        self.groupBox.setSizePolicy(sizePolicy2)
-        self.groupBox.setMinimumSize(QSize(0, 80))
-        self.groupBox.setStyleSheet(u"QGroupBox{\n"
-"	border: 1px solid white;\n"
-"	color: #ffffff;\n"
-"}\n"
-"\n"
-"QGroupBox::title {\n"
-"    subcontrol-origin: margin;\n"
-"    left: 7px;\n"
-"	top: -10ox;\n"
-"    padding: 0px 5px 0px 5px;\n"
-"}\n"
-"\n"
-"QGroupBox {\n"
-"    font: bold;\n"
-"    border: 1px solid silver;\n"
-"    border-radius: 6px;\n"
-"    margin-top: 6px;\n"
-"}")
-        self.restartWebsocketButton = QToolButton(self.groupBox)
-        self.restartWebsocketButton.setObjectName(u"restartWebsocketButton")
-        self.restartWebsocketButton.setGeometry(QRect(510, 34, 100, 25))
-        self.restartWebsocketButton.setMinimumSize(QSize(100, 25))
-        self.restartWebsocketButton.setIcon(icon7)
-        self.restartWebsocketButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        self.lineEdit = QLineEdit(self.groupBox)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setGeometry(QRect(20, 40, 271, 20))
-        self.lineEdit_2 = QLineEdit(self.groupBox)
-        self.lineEdit_2.setObjectName(u"lineEdit_2")
-        self.lineEdit_2.setGeometry(QRect(310, 40, 113, 20))
-        self.label_8 = QLabel(self.groupBox)
-        self.label_8.setObjectName(u"label_8")
-        self.label_8.setGeometry(QRect(20, 20, 47, 13))
-        self.label_9 = QLabel(self.groupBox)
-        self.label_9.setObjectName(u"label_9")
-        self.label_9.setGeometry(QRect(310, 20, 47, 13))
-
-        self.verticalLayout_14.addWidget(self.groupBox)
-
-        self.groupBox_5 = QGroupBox(self.spdxWidget)
-        self.groupBox_5.setObjectName(u"groupBox_5")
-        sizePolicy4.setHeightForWidth(self.groupBox_5.sizePolicy().hasHeightForWidth())
-        self.groupBox_5.setSizePolicy(sizePolicy4)
-        self.groupBox_5.setStyleSheet(u"QGroupBox{\n"
-"	border: 1px solid white;\n"
-"	color: #ffffff;\n"
-"}\n"
-"\n"
-"QGroupBox::title {\n"
-"    subcontrol-origin: margin;\n"
-"    left: 7px;\n"
-"	top: -10ox;\n"
-"    padding: 0px 5px 0px 5px;\n"
-"}\n"
-"\n"
-"QGroupBox {\n"
-"    font: bold;\n"
-"    border: 1px solid silver;\n"
-"    border-radius: 6px;\n"
-"    margin-top: 6px;\n"
-"}")
-
-        self.verticalLayout_14.addWidget(self.groupBox_5)
-
-        self.stackedWidget.addWidget(self.spdxWidget)
         self.kitsWidget = QWidget()
         self.kitsWidget.setObjectName(u"kitsWidget")
         self.verticalLayout_13 = QVBoxLayout(self.kitsWidget)
@@ -632,12 +483,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_13.addWidget(self.label_7)
 
         self.kitTableWidget = QTableWidget(self.kitsWidget)
-        if (self.kitTableWidget.columnCount() < 2):
-            self.kitTableWidget.setColumnCount(2)
+        if (self.kitTableWidget.columnCount() < 1):
+            self.kitTableWidget.setColumnCount(1)
         __qtablewidgetitem = QTableWidgetItem()
         self.kitTableWidget.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        self.kitTableWidget.setHorizontalHeaderItem(1, __qtablewidgetitem1)
         if (self.kitTableWidget.rowCount() < 100):
             self.kitTableWidget.setRowCount(100)
         self.kitTableWidget.setObjectName(u"kitTableWidget")
@@ -650,250 +499,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_13.addWidget(self.kitTableWidget)
 
         self.stackedWidget.addWidget(self.kitsWidget)
-        self.reactiveWidget = QWidget()
-        self.reactiveWidget.setObjectName(u"reactiveWidget")
-        self.verticalLayout_15 = QVBoxLayout(self.reactiveWidget)
-        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
-        self.groupBox_6 = QGroupBox(self.reactiveWidget)
-        self.groupBox_6.setObjectName(u"groupBox_6")
-        sizePolicy2.setHeightForWidth(self.groupBox_6.sizePolicy().hasHeightForWidth())
-        self.groupBox_6.setSizePolicy(sizePolicy2)
-        self.groupBox_6.setMinimumSize(QSize(120, 60))
-        self.groupBox_6.setStyleSheet(u"QGroupBox{\n"
-"	border: 1px solid white;\n"
-"	color: #ffffff;\n"
-"}\n"
-"\n"
-"QGroupBox::title {\n"
-"    subcontrol-origin: margin;\n"
-"    left: 7px;\n"
-"	top: -10ox;\n"
-"    padding: 0px 5px 0px 5px;\n"
-"}\n"
-"\n"
-"QGroupBox {\n"
-"    font: bold;\n"
-"    border: 1px solid silver;\n"
-"    border-radius: 6px;\n"
-"    margin-top: 6px;\n"
-"}")
-        self.horizontalLayout_7 = QHBoxLayout(self.groupBox_6)
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(-1, 4, 18, 4)
-        self.label_11 = QLabel(self.groupBox_6)
-        self.label_11.setObjectName(u"label_11")
-
-        self.horizontalLayout_7.addWidget(self.label_11)
-
-        self.reactWledUrlLineEdit = QLineEdit(self.groupBox_6)
-        self.reactWledUrlLineEdit.setObjectName(u"reactWledUrlLineEdit")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.reactWledUrlLineEdit.sizePolicy().hasHeightForWidth())
-        self.reactWledUrlLineEdit.setSizePolicy(sizePolicy6)
-        self.reactWledUrlLineEdit.setMinimumSize(QSize(180, 0))
-
-        self.horizontalLayout_7.addWidget(self.reactWledUrlLineEdit)
-
-        self.horizontalSpacer_3 = QSpacerItem(32, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_7.addItem(self.horizontalSpacer_3)
-
-        self.widget_2 = QWidget(self.groupBox_6)
-        self.widget_2.setObjectName(u"widget_2")
-        self.horizontalLayout = QHBoxLayout(self.widget_2)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer = QSpacerItem(36, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer)
-
-        self.reactStatusImg = QLabel(self.widget_2)
-        self.reactStatusImg.setObjectName(u"reactStatusImg")
-        sizePolicy6.setHeightForWidth(self.reactStatusImg.sizePolicy().hasHeightForWidth())
-        self.reactStatusImg.setSizePolicy(sizePolicy6)
-        self.reactStatusImg.setMinimumSize(QSize(29, 29))
-
-        self.horizontalLayout.addWidget(self.reactStatusImg)
-
-        self.reactStatusLabel = QLabel(self.widget_2)
-        self.reactStatusLabel.setObjectName(u"reactStatusLabel")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.reactStatusLabel.sizePolicy().hasHeightForWidth())
-        self.reactStatusLabel.setSizePolicy(sizePolicy7)
-        self.reactStatusLabel.setMinimumSize(QSize(80, 29))
-
-        self.horizontalLayout.addWidget(self.reactStatusLabel)
-
-        self.horizontalSpacer_2 = QSpacerItem(36, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_2)
-
-
-        self.horizontalLayout_7.addWidget(self.widget_2)
-
-        self.reactConnectButton = QToolButton(self.groupBox_6)
-        self.reactConnectButton.setObjectName(u"reactConnectButton")
-        self.reactConnectButton.setMinimumSize(QSize(90, 0))
-        self.reactConnectButton.setStyleSheet(u"QToolButton {\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-" 	border-radius: 5px;\n"
-"}\n"
-"\n"
-"QToolButton:pressed\n"
-"{\n"
-"	border-style:solid;\n"
-"	border-width:1px;\n"
-"	border-color: #ffffff;\n"
-"	margin-left: 3px;\n"
-"	margin-top: 3px;\n"
-"}")
-        icon8 = QIcon()
-        icon8.addFile(u":/resources/img/icons/zap.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.reactConnectButton.setIcon(icon8)
-        self.reactConnectButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-        self.horizontalLayout_7.addWidget(self.reactConnectButton)
-
-
-        self.verticalLayout_15.addWidget(self.groupBox_6)
-
-        self.groupBox_3 = QGroupBox(self.reactiveWidget)
-        self.groupBox_3.setObjectName(u"groupBox_3")
-        self.groupBox_3.setStyleSheet(u"QGroupBox{\n"
-"	border: 1px solid white;\n"
-"	color: #ffffff;\n"
-"}\n"
-"\n"
-"QGroupBox::title {\n"
-"    subcontrol-origin: margin;\n"
-"    left: 7px;\n"
-"	top: -10ox;\n"
-"    padding: 0px 5px 0px 5px;\n"
-"}\n"
-"\n"
-"QGroupBox {\n"
-"    font: bold;\n"
-"    border: 1px solid silver;\n"
-"    border-radius: 6px;\n"
-"    margin-top: 6px;\n"
-"}")
-        self.horizontalLayout_2 = QHBoxLayout(self.groupBox_3)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.reactTable = QTableWidget(self.groupBox_3)
-        if (self.reactTable.columnCount() < 4):
-            self.reactTable.setColumnCount(4)
-        self.reactTable.setObjectName(u"reactTable")
-        self.reactTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.reactTable.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.reactTable.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.reactTable.setColumnCount(4)
-
-        self.horizontalLayout_2.addWidget(self.reactTable)
-
-        self.widget = QWidget(self.groupBox_3)
-        self.widget.setObjectName(u"widget")
-        sizePolicy8 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        sizePolicy8.setHorizontalStretch(0)
-        sizePolicy8.setVerticalStretch(0)
-        sizePolicy8.setHeightForWidth(self.widget.sizePolicy().hasHeightForWidth())
-        self.widget.setSizePolicy(sizePolicy8)
-        self.widget.setMinimumSize(QSize(100, 0))
-        self.verticalLayout_16 = QVBoxLayout(self.widget)
-        self.verticalLayout_16.setObjectName(u"verticalLayout_16")
-        self.reactAddButton = QToolButton(self.widget)
-        self.reactAddButton.setObjectName(u"reactAddButton")
-        self.reactAddButton.setMinimumSize(QSize(90, 0))
-        self.reactAddButton.setStyleSheet(u"QToolButton {\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-" 	border-radius: 5px;\n"
-"}\n"
-"\n"
-"QToolButton:pressed\n"
-"{\n"
-"	border-style:solid;\n"
-"	border-width:1px;\n"
-"	border-color: #ffffff;\n"
-"	margin-left: 3px;\n"
-"	margin-top: 3px;\n"
-"}")
-        icon9 = QIcon()
-        icon9.addFile(u":/resources/img/icons/plus-square.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.reactAddButton.setIcon(icon9)
-        self.reactAddButton.setIconSize(QSize(24, 24))
-        self.reactAddButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-        self.verticalLayout_16.addWidget(self.reactAddButton)
-
-        self.reactEditButton = QToolButton(self.widget)
-        self.reactEditButton.setObjectName(u"reactEditButton")
-        self.reactEditButton.setMinimumSize(QSize(90, 0))
-        self.reactEditButton.setStyleSheet(u"QToolButton {\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-" 	border-radius: 5px;\n"
-"}\n"
-"\n"
-"QToolButton:pressed\n"
-"{\n"
-"	border-style:solid;\n"
-"	border-width:1px;\n"
-"	border-color: #ffffff;\n"
-"	margin-left: 3px;\n"
-"	margin-top: 3px;\n"
-"}")
-        icon10 = QIcon()
-        icon10.addFile(u":/resources/img/icons/edit.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.reactEditButton.setIcon(icon10)
-        self.reactEditButton.setIconSize(QSize(24, 24))
-        self.reactEditButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-        self.verticalLayout_16.addWidget(self.reactEditButton)
-
-        self.verticalSpacer_2 = QSpacerItem(20, 106, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_16.addItem(self.verticalSpacer_2)
-
-        self.reactDeleteButton = QToolButton(self.widget)
-        self.reactDeleteButton.setObjectName(u"reactDeleteButton")
-        self.reactDeleteButton.setMinimumSize(QSize(90, 0))
-        self.reactDeleteButton.setStyleSheet(u"QToolButton {\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-" 	border-radius: 5px;\n"
-"}\n"
-"\n"
-"QToolButton:pressed\n"
-"{\n"
-"	border-style:solid;\n"
-"	border-width:1px;\n"
-"	border-color: #ffffff;\n"
-"	margin-left: 3px;\n"
-"	margin-top: 3px;\n"
-"}")
-        icon11 = QIcon()
-        icon11.addFile(u":/resources/img/icons/x-square.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.reactDeleteButton.setIcon(icon11)
-        self.reactDeleteButton.setIconSize(QSize(24, 24))
-        self.reactDeleteButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-        self.verticalLayout_16.addWidget(self.reactDeleteButton)
-
-
-        self.horizontalLayout_2.addWidget(self.widget)
-
-
-        self.verticalLayout_15.addWidget(self.groupBox_3)
-
-        self.stackedWidget.addWidget(self.reactiveWidget)
         self.midiWidget = QWidget()
         self.midiWidget.setObjectName(u"midiWidget")
         self.horizontalLayout_3 = QHBoxLayout(self.midiWidget)
@@ -902,8 +507,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.midiFilterFrame = QWidget(self.midiWidget)
         self.midiFilterFrame.setObjectName(u"midiFilterFrame")
-        sizePolicy8.setHeightForWidth(self.midiFilterFrame.sizePolicy().hasHeightForWidth())
-        self.midiFilterFrame.setSizePolicy(sizePolicy8)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.midiFilterFrame.sizePolicy().hasHeightForWidth())
+        self.midiFilterFrame.setSizePolicy(sizePolicy6)
         self.midiFilterFrame.setMinimumSize(QSize(150, 0))
         self.verticalLayout_8 = QVBoxLayout(self.midiFilterFrame)
         self.verticalLayout_8.setSpacing(9)
@@ -911,11 +519,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.setContentsMargins(-1, -1, -1, 0)
         self.msgTypeGroupBox = QGroupBox(self.midiFilterFrame)
         self.msgTypeGroupBox.setObjectName(u"msgTypeGroupBox")
-        sizePolicy9 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        sizePolicy9.setHorizontalStretch(0)
-        sizePolicy9.setVerticalStretch(0)
-        sizePolicy9.setHeightForWidth(self.msgTypeGroupBox.sizePolicy().hasHeightForWidth())
-        self.msgTypeGroupBox.setSizePolicy(sizePolicy9)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.msgTypeGroupBox.sizePolicy().hasHeightForWidth())
+        self.msgTypeGroupBox.setSizePolicy(sizePolicy7)
         self.msgTypeGroupBox.setStyleSheet(u"QGroupBox{\n"
 "	border: 1px solid white;\n"
 "}\n"
@@ -1108,7 +716,7 @@ class Ui_MainWindow(object):
 "	margin-left: 3px;\n"
 "	margin-top: 3px;\n"
 "}")
-        self.refreshDevicesButton.setIcon(icon7)
+        self.refreshDevicesButton.setIcon(icon6)
         self.refreshDevicesButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
         self.horizontalLayout_5.addWidget(self.refreshDevicesButton)
@@ -1223,11 +831,11 @@ class Ui_MainWindow(object):
 
         self.statusBarFrame = QFrame(self.mainFrame)
         self.statusBarFrame.setObjectName(u"statusBarFrame")
-        sizePolicy10 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        sizePolicy10.setHorizontalStretch(0)
-        sizePolicy10.setVerticalStretch(0)
-        sizePolicy10.setHeightForWidth(self.statusBarFrame.sizePolicy().hasHeightForWidth())
-        self.statusBarFrame.setSizePolicy(sizePolicy10)
+        sizePolicy8 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy8.setHorizontalStretch(0)
+        sizePolicy8.setVerticalStretch(0)
+        sizePolicy8.setHeightForWidth(self.statusBarFrame.sizePolicy().hasHeightForWidth())
+        self.statusBarFrame.setSizePolicy(sizePolicy8)
         self.statusBarFrame.setMinimumSize(QSize(0, 30))
         self.statusBarFrame.setFrameShape(QFrame.StyledPanel)
         self.statusBarFrame.setFrameShadow(QFrame.Raised)
@@ -1257,7 +865,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(4)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1267,7 +875,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.homeMenuButton.setText(QCoreApplication.translate("MainWindow", u" Home", None))
         self.drumKitsMenuButton.setText(QCoreApplication.translate("MainWindow", u" Drum Kits", None))
-        self.reactiveButton.setText(QCoreApplication.translate("MainWindow", u" Reactive", None))
         self.midiLogMenuButton.setText(QCoreApplication.translate("MainWindow", u" Midi Log", None))
         self.appLogMenuButton.setText(QCoreApplication.translate("MainWindow", u" App Log", None))
         self.settingsButton.setText(QCoreApplication.translate("MainWindow", u" Settings", None))
@@ -1278,29 +885,9 @@ class Ui_MainWindow(object):
         self.refreshKitDataButton.setText(QCoreApplication.translate("MainWindow", u"Get Current Kit", None))
         self.obsGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"OBS Source", None))
         self.obs_src_label.setText("")
-        self.spdxDeviceGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Select SPD-SX PRO Device", None))
-        self.spdxDeviceComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Select a MIDI Device", None))
-
-        self.refreshSPDXDevicesButton.setText(QCoreApplication.translate("MainWindow", u" Refresh", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"WebSocket Server", None))
-        self.restartWebsocketButton.setText(QCoreApplication.translate("MainWindow", u" Restart", None))
-        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Host", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Port", None))
-        self.groupBox_5.setTitle(QCoreApplication.translate("MainWindow", u"Color Mapping", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Drum Kit List", None))
         ___qtablewidgetitem = self.kitTableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Name", None));
-        ___qtablewidgetitem1 = self.kitTableWidget.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Subname", None));
-        self.groupBox_6.setTitle(QCoreApplication.translate("MainWindow", u"Reactive Drum Settings", None))
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"WLED URL:", None))
-        self.reactStatusImg.setText("")
-        self.reactStatusLabel.setText(QCoreApplication.translate("MainWindow", u"Not Connected", None))
-        self.reactConnectButton.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
-        self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Drum / WLED Mappings", None))
-        self.reactAddButton.setText(QCoreApplication.translate("MainWindow", u" Add", None))
-        self.reactEditButton.setText(QCoreApplication.translate("MainWindow", u" Edit", None))
-        self.reactDeleteButton.setText(QCoreApplication.translate("MainWindow", u" Delete", None))
         self.msgTypeGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Message Type", None))
         self.midiLogShowSysExCheckBox.setText(QCoreApplication.translate("MainWindow", u"Sys Ex", None))
         self.midiLogShowNoteOnCheckBox.setText(QCoreApplication.translate("MainWindow", u"Note On", None))
@@ -1324,12 +911,11 @@ class Ui_MainWindow(object):
         self.browseFileButton.setStatusTip("")
 #endif // QT_CONFIG(statustip)
         self.browseFileButton.setText(QCoreApplication.translate("MainWindow", u"Browse", None))
-        self.obsFileTemplateEdit.setPlainText(QCoreApplication.translate("MainWindow", u"{kit_num} {kit_name} {kit_subname}", None))
+        self.obsFileTemplateEdit.setPlainText(QCoreApplication.translate("MainWindow", u"Current Kit: {kit_num} {kit_name} ", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Contents:", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Template Keywords:", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"{kit_num}\n"
-"{kit_name}\n"
-"{kit_subname}", None))
+"{kit_name}", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Chat Bot", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Channel:", None))
         self.settingsChatBotCheckbox.setText(QCoreApplication.translate("MainWindow", u"Send Data To Chat Bot", None))
@@ -1343,7 +929,7 @@ class Ui_MainWindow(object):
 ################################################################################
 ## Form generated from reading UI file 'ReactDialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.1
+## Created by: Qt User Interface Compiler version 6.5.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################

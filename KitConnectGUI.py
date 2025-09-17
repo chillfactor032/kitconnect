@@ -20,7 +20,6 @@ from PySide6.QtWebEngineWidgets import QWebEngineView
 import Resources_rc
 from UI_Components import Ui_MainWindow, Ui_ReactDialog
 from td50x import TD50X
-from wled import WledWebsocket
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     
@@ -148,7 +147,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Navigation Bar Button Signals
         self.homeMenuButton.clicked.connect(self.navBarButtonClicked)
         self.drumKitsMenuButton.clicked.connect(self.navBarButtonClicked)
-        self.reactiveButton.clicked.connect(self.navBarButtonClicked)
         self.midiLogMenuButton.clicked.connect(self.navBarButtonClicked)
         self.appLogMenuButton.clicked.connect(self.navBarButtonClicked)
         self.settingsButton.clicked.connect(self.navBarButtonClicked)
@@ -161,10 +159,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.browseFileButton.clicked.connect(self.browseOBSFile)
         self.settingsChatBotCheckbox.stateChanged.connect(self.chatBotCheckBoxChanged)
         self.settingsChannelLineEdit.editingFinished.connect(self.twitchChannelChanged)
-        self.reactAddButton.clicked.connect(self.react_add_row)
-        self.reactEditButton.clicked.connect(self.react_edit_row)
-        self.reactDeleteButton.clicked.connect(self.react_del_row)
-        self.reactConnectButton.clicked.connect(self.reactConnectButtonClicked)
 
         # Set Midi Filter Checkbox Signals
         self.midiLogShowSysExCheckBox.stateChanged.connect(self.midiFilterChanged)
@@ -175,13 +169,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.midiLogShowControlChangeCheckBox.stateChanged.connect(self.midiFilterChanged)
         self.midiLogShowClockCheckBox.stateChanged.connect(self.midiFilterChanged)
         self.midiLogShowAllCheckBox.stateChanged.connect(self.midiFilterChanged)
-
-        # React Table
-        reactHeaderLabels = ["Drum", "Midi Event", "WLED Msg"]
-        self.reactTable.setColumnCount(len(reactHeaderLabels))
-        self.reactTable.setHorizontalHeaderLabels(reactHeaderLabels)
-        self.reactTable.horizontalHeader().setStretchLastSection(True)
-        self.reactTable.verticalHeader().hide()
 
         # TD-50X Object
         self.td50x = None
@@ -199,10 +186,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.setWindowIcon(default_icon)
 
-        self.react_label_default_css = self.reactStatusLabel.styleSheet()
-        self.react_label_connected_css = "QLabel {font-style: italic; color: #c2ffb3;}"
-        self.react_label_disconnected_css = "QLabel {font-style: italic; color: grey;}"
-        self.reactStatusLabel.setStyleSheet(self.react_label_disconnected_css)
         self.midi_types = TD50X.get_midi_types()
         self.log(self.font_path)
         self.log(f"Chat Command URL: {self.chat_command_url}")
@@ -242,15 +225,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         </html>
         """.strip()
 
-        # WLED WebSocket Client
-        self.reactWledUrlLineEdit.setText(self.settings.value(""))
-        self.wled_url = self.settings.value("wled_url", "")
-        self.wled_ws = None
-        self.wled_monitor_timer = QTimer()
-        self.wled_monitor_timer.timeout.connect(self.checkWledConnection)
-        self.wled_monitor_timer.start(5000)
-        self.wledConnect()
-
         self.update_react_rows()
         self.obs_webview = QWebEngineView()
         self.obs_webview.setHtml(self.obs_webview_html)
@@ -278,58 +252,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Finally, Show the UI
         self.status("KitConnect Started")
         self.show()
-        
-
-    def checkWledConnection(self):
-        if self.wled_ws is not None and self.wled_ws.connected():
-            if not self.react_prev_connected:
-                # Just Connected, Update UI
-                self.reactWledUrlLineEdit.setEnabled(False)
-                self.reactConnectButton.setText("Disconnect")
-                self.reactStatusLabel.setStyleSheet(self.react_label_connected_css)
-                self.reactStatusLabel.setText("Connected")
-                self.reactStatusImg.setMovie(self.connected_gif)
-                self.connected_gif.start()
-                self.react_prev_connected = True
-                self.status("Connected to WLED Websocket", 5000)
-        else:
-            if self.react_prev_connected:
-                # Just Disconnected, Update UI
-                self.reactWledUrlLineEdit.setEnabled(True)
-                self.reactConnectButton.setText("Connect")
-                self.reactStatusLabel.setStyleSheet(self.react_label_disconnected_css)
-                self.reactStatusLabel.setText("Not Connected")
-                self.reactStatusImg.clear()
-                self.react_prev_connected = False
-                self.status("Disconnected from WLED Websocket", 5000)
-
-    def wledDisconnect(self):
-        if self.wled_ws is not None and self.wled_ws.connected():
-            self.wled_ws.stop()
-            self.wled_ws.join()
-
-    def wledConnect(self):
-        self.wledDisconnect()
-        self.wled_url = self.settings.value("wled_url", None)
-        self.reactWledUrlLineEdit.setText(self.wled_url)
-        if self.wled_url is not None:
-            self.wled_ws = WledWebsocket(self.wled_url)
-            self.wled_ws.signals.log.connect(self.log)
-            self.wled_ws.start()
-
-    def reactConnectButtonClicked(self):
-        url = self.reactWledUrlLineEdit.text()
-        if len(url) > 0:
-            self.settings.setValue("wled_url", url)
-        if self.wled_ws is not None and self.wled_ws.connected():
-            self.wledDisconnect()
-        else:
-            self.wledConnect()
-        self.reactConnectButton.setText("Working...")
-        if self.react_prev_connected:
-            self.status("Disconnecting from WLED Websocket...", 5000)
-        else:
-            self.status("Connecting to WLED Websocket...", 5000)
         
     def refreshDevices(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -388,11 +310,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for x in range(0, row_count):
             kit_num = x+1
             kit_name = self.kitTableWidget.item(x, 0).text()
-            kit_subname = self.kitTableWidget.item(x, 1).text()
             self.kit_data[x] = {
                 "kit_num": kit_num,
-                "name": kit_name,
-                "subname": kit_subname
+                "name": kit_name
             }
         with open(self.kit_data_path, "w") as kit_file:
             json.dump(self.kit_data, kit_file, indent=2)
@@ -457,80 +377,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         except Exception as e:
             self.log("Error: "+str(e))
         self.obs_src_label.setText(out_str)
-    
-    def react_add_row(self):
-        print("React Add Row")
-        dlg = ReactDialog(self)
-        if dlg.exec():
-            results = dlg.get_results()
-            if results is not None:
-                self.react_rows.append(results)
-                self.save_react_rows()
-                self.update_react_rows()
-
-    def react_edit_row(self):
-        print("React Edit Row")
-        selected = self.reactTable.currentRow()
-        if selected < 0:
-            return
-        dlg = ReactDialog(self, self.react_rows[selected])
-        if dlg.exec():
-            results = dlg.get_results()
-            if results is not None:
-                self.react_rows[selected] = results
-                self.save_react_rows()
-                self.update_react_rows()
-    
-    def react_del_row(self):
-        print("React Del Row")
-        selected = self.reactTable.currentRow()
-        if selected < 0:
-            return
-        self.react_rows.pop(selected)
-        self.save_react_rows()
-        self.update_react_rows()
-    
-    def save_react_rows(self):
-        self.settings.beginWriteArray("react_triggers")
-        for x in range(len(self.react_rows)):
-            self.settings.setArrayIndex(x)
-            row = self.react_rows[x]
-            self.settings.setValue("note_value", str(row[0].value))
-            self.settings.setValue("midi_event", str(row[1]))
-            message_b64 = base64.b64encode(row[2].encode("utf-8")).decode("utf-8")
-            self.settings.setValue("message_b64", message_b64)
-        self.settings.endArray()
-
-    def update_react_rows(self):
-        size = self.settings.beginReadArray("react_triggers")
-        self.react_rows = []
-        for i in range(0, size):
-            self.settings.setArrayIndex(i)
-            row = []
-            note_enum = TD50X.NoteNumbers.UNKNOWN
-            note_value = int(self.settings.value("note_value", "0"))
-            for note in TD50X.NoteNumbers:
-                if note.value == note_value:
-                    note_enum = note
-                    break
-            row.append(note_enum)
-            midi_value = self.settings.value("midi_event", "any")
-            row.append(midi_value)
-            message_b64 = self.settings.value("message_b64", "")
-            message_text = base64.b64decode(message_b64.encode("utf-8")).decode("utf-8")
-            row.append(message_text)
-            self.react_rows.append(row)
-        self.settings.endArray()
-        self.clear_react_table()
-        for x in range(len(self.react_rows)-1, -1, -1):
-            self.reactTable.insertRow(0)
-            self.reactTable.setItem(0, 0, QTableWidgetItem(self.react_rows[x][0].name))
-            self.reactTable.setItem(0, 1, QTableWidgetItem(self.react_rows[x][1]))
-            self.reactTable.setItem(0, 2, QTableWidgetItem(self.react_rows[x][2]))
-
-    def clear_react_table(self):
-        while self.reactTable.rowCount() > 0:
-            self.reactTable.removeRow(0)
 
     # Called every 2 secs on a timer
     def check_send_chatbot(self):
@@ -551,17 +397,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.obsFilePath = file
         self.obsFileLineEdit.setText(file)
 
-    # Manually refresh the current kit
-    def refreshKit(self):
-        print("Refresh Kit")
-
     def navBarButtonResetBgColors(self):
         self.homeMenuButton.setStyleSheet(self.menu_button_default_css)
         self.drumKitsMenuButton.setStyleSheet(self.menu_button_default_css)
         self.midiLogMenuButton.setStyleSheet(self.menu_button_default_css)
         self.appLogMenuButton.setStyleSheet(self.menu_button_default_css)
         self.settingsButton.setStyleSheet(self.menu_button_default_css)
-        self.reactiveButton.setStyleSheet(self.menu_button_default_css)
 
     # Slot for Nav Bar Buttons
     def navBarButtonClicked(self):
