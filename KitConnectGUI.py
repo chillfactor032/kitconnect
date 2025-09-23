@@ -49,7 +49,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.react_rows = []
         self.connected_gif = QMovie(":resources/img/connected.gif")
         self.react_prev_connected = False
-        self.menu_button_default_css = self.homeMenuButton.styleSheet()
+        #self.menu_button_default_css = self.settingsButton.styleSheet()
+        self.menu_button_default_css = """
+         #menuFrame QToolButton {
+            background-color: #16191d;
+            color: #fff;
+            text-align: left;
+            border: none;
+            padding: 5px 0px 5px 0px;
+            border-radius: 5px;
+        }
+
+        #menuFrame QToolButton:hover {
+            background-color: #2c313c;
+        }
+        """.strip()
         self.menu_button_active_css = """
             #menuFrame QToolButton {
                 background-color: #343b47;
@@ -225,7 +239,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         </html>
         """.strip()
 
-        self.update_react_rows()
         self.obs_webview = QWebEngineView()
         self.obs_webview.setHtml(self.obs_webview_html)
         self.kitTableWidget.setColumnWidth(0, 200)
@@ -547,7 +560,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if not msg:
             return
         print(msg)
-        style = "color: #000000;"
+        style = "color: #ffffff;"
         now = datetime.datetime.now()
         timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
         msg = f'<span style="{style}">{timestamp} - {msg}</span>'
