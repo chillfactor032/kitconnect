@@ -523,24 +523,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # Received a MIDI Message
     def midi_recv(self, msg):
         self.log_midi(msg, outgoing=False)
-        if self.wled_ws is None or not self.wled_ws.connected():
-            return
         note = msg.dict().get("note",TD50X.NoteNumbers.UNKNOWN.value)
-        for react in self.react_rows:
-            #0: Note 1: midi  2: msg
-            if react[0].value == note or react[0] == TD50X.NoteNumbers.UNKNOWN.value:
-                if react[1] == msg.type or react[1] == "any":
-                    self.wled_ws.send(self.ws_var_replace(react[2], msg.dict()))
-
-    def ws_var_replace(self, ws_msg: str, midi_dict: dict):
-        ws_msg = ws_msg.replace("${VELOCITY}", str(midi_dict.get("velocity", 64)))
-        return ws_msg
             
     def updateChatBotKit(self, key, channel, kit_num, kit_name, kit_subname):
         thread = Thread(target=self.updateChatBotKitWorker, args=(key, channel, kit_num, kit_name, kit_subname))
         thread.start()
     
-    def updateChatBotKitWorker(self, key, channel, kit_num, kit_name, kit_subname):
+    def updateChatBotKitWorker(self, key, channel, kit_num, kit_name, kit_subname=""):
         payload = {
             "key": key,
             "type": "kit",
@@ -654,9 +643,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.settings.setValue(f"MidiLogFilter/All", "1")
         else:
             self.settings.setValue(f"MidiLogFilter/All", "0")
-        self.save_react_rows()
-        self.wled_url = self.reactWledUrlLineEdit.text()
-        self.settings.setValue("wled_url", self.wled_url)
         self.settings.sync()
         
     # App is closing, cleanup
@@ -666,13 +652,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         # Close TD50X Midi Connection
         self.closeTD50X()
-        
-        # Close WLED Connection
-        self.wledDisconnect()
-
-        #Stop Timers
-        self.wled_monitor_timer.stop()
-        self.chatbot_timer.stop()
 
         # Remember the size and position of the GUI
         self.log("Saving Settings")
