@@ -273,7 +273,7 @@ QTextBrowser {
            <number>9</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
+           <number>4</number>
           </property>
           <property name="rightMargin">
            <number>9</number>
@@ -586,7 +586,7 @@ QFrame {
              <number>2</number>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="homeWidget">
              <property name="sizePolicy">
@@ -603,7 +603,7 @@ QFrame {
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
-               <widget class="QGroupBox" name="curKitGroupBox">
+               <widget class="QWidget" name="curKitWidget" native="true">
                 <property name="styleSheet">
                  <string notr="true">QGroupBox{
 	border: 1px solid white;
@@ -624,112 +624,11 @@ QGroupBox {
     margin-top: 6px;
 }</string>
                 </property>
-                <property name="title">
-                 <string>Current Kit</string>
-                </property>
-                <widget class="QLineEdit" name="curKitLineEdit">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>170</y>
-                   <width>601</width>
-                   <height>61</height>
-                  </rect>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>36</pointsize>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-                <widget class="QLineEdit" name="curKitSubLineEdit">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>240</y>
-                   <width>601</width>
-                   <height>61</height>
-                  </rect>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>36</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-                <widget class="QToolButton" name="refreshKitDataButton">
-                 <property name="geometry">
-                  <rect>
-                   <x>430</x>
-                   <y>310</y>
-                   <width>191</width>
-                   <height>31</height>
-                  </rect>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>14</pointsize>
-                  </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">QToolButton {
-	border-width: 1px;
-	border-width: 1px;
-	border-width: 1px;
- 	border-radius: 5px;
-}
-
-QToolButton:pressed
-{
-	border-style:solid;
-	border-width:1px;
-	border-color: #ffffff;
-	margin-left: 3px;
-	margin-top: 3px;
-}</string>
-                 </property>
-                 <property name="text">
-                  <string>Get Current Kit</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../Resources.qrc">
-                   <normaloff>:/resources/img/icons/refresh-cw.svg</normaloff>:/resources/img/icons/refresh-cw.svg</iconset>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>24</width>
-                   <height>24</height>
-                  </size>
-                 </property>
-                 <property name="toolButtonStyle">
-                  <enum>Qt::ToolButtonTextBesideIcon</enum>
-                 </property>
-                </widget>
-                <widget class="QGroupBox" name="obsGroupBox">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>30</y>
-                   <width>591</width>
-                   <height>121</height>
-                  </rect>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">QGroupBox::title {
+                <layout class="QVBoxLayout" name="verticalLayout_14">
+                 <item>
+                  <widget class="QGroupBox" name="obsGroupBox">
+                   <property name="styleSheet">
+                    <string notr="true">QGroupBox::title {
     subcontrol-origin: margin;
     left: 7px;
 	top: -10ox;
@@ -742,25 +641,59 @@ QGroupBox {
     border-radius: 6px;
     margin-top: 6px;
 }</string>
-                 </property>
-                 <property name="title">
-                  <string>OBS Source</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_3">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="obs_src_label">
-                    <property name="font">
-                     <font>
-                      <pointsize>20</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
+                   </property>
+                   <property name="title">
+                    <string>OBS Source</string>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_3">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="obs_src_label">
+                      <property name="font">
+                       <font>
+                        <pointsize>20</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="curKitLineEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>36</pointsize>
+                     <weight>50</weight>
+                     <bold>false</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="curKitSubLineEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>36</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -1130,8 +1063,8 @@ QGroupBox {
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.875pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>

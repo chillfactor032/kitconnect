@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MainWindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.2
+## Created by: Qt User Interface Compiler version 6.5.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -225,7 +225,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.menuFrame = QFrame(self.centralwidget)
         self.menuFrame.setObjectName(u"menuFrame")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.menuFrame.sizePolicy().hasHeightForWidth())
@@ -239,7 +239,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.frame_2 = QFrame(self.menuFrame)
         self.frame_2.setObjectName(u"frame_2")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
@@ -248,10 +248,10 @@ class Ui_MainWindow(object):
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_4 = QVBoxLayout(self.frame_2)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(9, 0, 9, 0)
+        self.verticalLayout_4.setContentsMargins(9, 4, 9, 0)
         self.homeMenuButton = QToolButton(self.frame_2)
         self.homeMenuButton.setObjectName(u"homeMenuButton")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+        sizePolicy2 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.homeMenuButton.sizePolicy().hasHeightForWidth())
@@ -259,9 +259,9 @@ class Ui_MainWindow(object):
         font = QFont()
         font.setPointSize(14)
         self.homeMenuButton.setFont(font)
-        self.homeMenuButton.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+        self.homeMenuButton.setCursor(QCursor(Qt.ArrowCursor))
         icon = QIcon()
-        icon.addFile(u":/resources/img/icons/home.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/resources/img/icons/home.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.homeMenuButton.setIcon(icon)
         self.homeMenuButton.setIconSize(QSize(24, 24))
         self.homeMenuButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
@@ -274,7 +274,7 @@ class Ui_MainWindow(object):
         self.drumKitsMenuButton.setSizePolicy(sizePolicy2)
         self.drumKitsMenuButton.setFont(font)
         icon1 = QIcon()
-        icon1.addFile(u":/resources/img/icons/music.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/resources/img/icons/music.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.drumKitsMenuButton.setIcon(icon1)
         self.drumKitsMenuButton.setIconSize(QSize(24, 24))
         self.drumKitsMenuButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
@@ -288,7 +288,7 @@ class Ui_MainWindow(object):
         self.midiLogMenuButton.setFont(font)
         self.midiLogMenuButton.setStyleSheet(u"")
         icon2 = QIcon()
-        icon2.addFile(u":/resources/img/icons/headphones.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u":/resources/img/icons/headphones.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.midiLogMenuButton.setIcon(icon2)
         self.midiLogMenuButton.setIconSize(QSize(24, 24))
         self.midiLogMenuButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
@@ -301,7 +301,7 @@ class Ui_MainWindow(object):
         self.appLogMenuButton.setSizePolicy(sizePolicy2)
         self.appLogMenuButton.setFont(font)
         icon3 = QIcon()
-        icon3.addFile(u":/resources/img/icons/file-text.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon3.addFile(u":/resources/img/icons/file-text.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.appLogMenuButton.setIcon(icon3)
         self.appLogMenuButton.setIconSize(QSize(24, 24))
         self.appLogMenuButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
@@ -313,7 +313,7 @@ class Ui_MainWindow(object):
 
         self.frame = QFrame(self.menuFrame)
         self.frame.setObjectName(u"frame")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
@@ -342,7 +342,7 @@ class Ui_MainWindow(object):
         self.settingsButton.setSizePolicy(sizePolicy2)
         self.settingsButton.setFont(font)
         icon4 = QIcon()
-        icon4.addFile(u":/resources/img/icons/settings.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon4.addFile(u":/resources/img/icons/settings.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.settingsButton.setIcon(icon4)
         self.settingsButton.setIconSize(QSize(24, 24))
         self.settingsButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
@@ -355,7 +355,7 @@ class Ui_MainWindow(object):
         self.githubButton.setSizePolicy(sizePolicy2)
         self.githubButton.setFont(font)
         icon5 = QIcon()
-        icon5.addFile(u":/resources/img/icons/github.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon5.addFile(u":/resources/img/icons/github.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.githubButton.setIcon(icon5)
         self.githubButton.setIconSize(QSize(24, 24))
         self.githubButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
@@ -370,7 +370,7 @@ class Ui_MainWindow(object):
 
         self.mainFrame = QFrame(self.centralwidget)
         self.mainFrame.setObjectName(u"mainFrame")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy4 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.mainFrame.sizePolicy().hasHeightForWidth())
@@ -396,7 +396,7 @@ class Ui_MainWindow(object):
         self.stackedWidget.setMidLineWidth(2)
         self.homeWidget = QWidget()
         self.homeWidget.setObjectName(u"homeWidget")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy5.setHorizontalStretch(0)
         sizePolicy5.setVerticalStretch(0)
         sizePolicy5.setHeightForWidth(self.homeWidget.sizePolicy().hasHeightForWidth())
@@ -424,48 +424,10 @@ class Ui_MainWindow(object):
 "    border-radius: 6px;\n"
 "    margin-top: 6px;\n"
 "}")
-        self.curKitLineEdit = QLineEdit(self.curKitGroupBox)
-        self.curKitLineEdit.setObjectName(u"curKitLineEdit")
-        self.curKitLineEdit.setGeometry(QRect(20, 170, 601, 61))
-        font1 = QFont()
-        font1.setPointSize(36)
-        font1.setBold(False)
-        self.curKitLineEdit.setFont(font1)
-        self.curKitLineEdit.setReadOnly(True)
-        self.curKitSubLineEdit = QLineEdit(self.curKitGroupBox)
-        self.curKitSubLineEdit.setObjectName(u"curKitSubLineEdit")
-        self.curKitSubLineEdit.setGeometry(QRect(20, 240, 601, 61))
-        font2 = QFont()
-        font2.setPointSize(36)
-        self.curKitSubLineEdit.setFont(font2)
-        self.curKitSubLineEdit.setReadOnly(True)
-        self.refreshKitDataButton = QToolButton(self.curKitGroupBox)
-        self.refreshKitDataButton.setObjectName(u"refreshKitDataButton")
-        self.refreshKitDataButton.setGeometry(QRect(430, 310, 191, 31))
-        self.refreshKitDataButton.setFont(font)
-        self.refreshKitDataButton.setStyleSheet(u"QToolButton {\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-"	border-width: 1px;\n"
-" 	border-radius: 5px;\n"
-"}\n"
-"\n"
-"QToolButton:pressed\n"
-"{\n"
-"	border-style:solid;\n"
-"	border-width:1px;\n"
-"	border-color: #ffffff;\n"
-"	margin-left: 3px;\n"
-"	margin-top: 3px;\n"
-"}")
-        icon6 = QIcon()
-        icon6.addFile(u":/resources/img/icons/refresh-cw.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.refreshKitDataButton.setIcon(icon6)
-        self.refreshKitDataButton.setIconSize(QSize(24, 24))
-        self.refreshKitDataButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.verticalLayout_14 = QVBoxLayout(self.curKitGroupBox)
+        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
         self.obsGroupBox = QGroupBox(self.curKitGroupBox)
         self.obsGroupBox.setObjectName(u"obsGroupBox")
-        self.obsGroupBox.setGeometry(QRect(20, 30, 591, 121))
         self.obsGroupBox.setStyleSheet(u"QGroupBox::title {\n"
 "    subcontrol-origin: margin;\n"
 "    left: 7px;\n"
@@ -483,11 +445,33 @@ class Ui_MainWindow(object):
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.obs_src_label = QLabel(self.obsGroupBox)
         self.obs_src_label.setObjectName(u"obs_src_label")
-        font3 = QFont()
-        font3.setPointSize(20)
-        self.obs_src_label.setFont(font3)
+        font1 = QFont()
+        font1.setPointSize(20)
+        self.obs_src_label.setFont(font1)
 
         self.gridLayout_3.addWidget(self.obs_src_label, 0, 0, 1, 1)
+
+
+        self.verticalLayout_14.addWidget(self.obsGroupBox)
+
+        self.curKitLineEdit = QLineEdit(self.curKitGroupBox)
+        self.curKitLineEdit.setObjectName(u"curKitLineEdit")
+        font2 = QFont()
+        font2.setPointSize(36)
+        font2.setBold(False)
+        self.curKitLineEdit.setFont(font2)
+        self.curKitLineEdit.setReadOnly(True)
+
+        self.verticalLayout_14.addWidget(self.curKitLineEdit)
+
+        self.curKitSubLineEdit = QLineEdit(self.curKitGroupBox)
+        self.curKitSubLineEdit.setObjectName(u"curKitSubLineEdit")
+        font3 = QFont()
+        font3.setPointSize(36)
+        self.curKitSubLineEdit.setFont(font3)
+        self.curKitSubLineEdit.setReadOnly(True)
+
+        self.verticalLayout_14.addWidget(self.curKitSubLineEdit)
 
 
         self.verticalLayout_6.addWidget(self.curKitGroupBox)
@@ -531,7 +515,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.midiFilterFrame = QWidget(self.midiWidget)
         self.midiFilterFrame.setObjectName(u"midiFilterFrame")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         sizePolicy6.setHorizontalStretch(0)
         sizePolicy6.setVerticalStretch(0)
         sizePolicy6.setHeightForWidth(self.midiFilterFrame.sizePolicy().hasHeightForWidth())
@@ -543,7 +527,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.setContentsMargins(-1, -1, -1, 0)
         self.msgTypeGroupBox = QGroupBox(self.midiFilterFrame)
         self.msgTypeGroupBox.setObjectName(u"msgTypeGroupBox")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         sizePolicy7.setHorizontalStretch(0)
         sizePolicy7.setVerticalStretch(0)
         sizePolicy7.setHeightForWidth(self.msgTypeGroupBox.sizePolicy().hasHeightForWidth())
@@ -613,8 +597,8 @@ class Ui_MainWindow(object):
         self.line.setStyleSheet(u"#line {\n"
 "	border: 5px solid white;\n"
 "}")
-        self.line.setFrameShape(QFrame.Shape.HLine)
-        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
 
         self.verticalLayout_12.addWidget(self.line)
 
@@ -623,7 +607,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_12.addWidget(self.midiLogShowAllCheckBox)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_12.addItem(self.verticalSpacer)
 
@@ -750,6 +734,8 @@ class Ui_MainWindow(object):
 "	margin-left: 3px;\n"
 "	margin-top: 3px;\n"
 "}")
+        icon6 = QIcon()
+        icon6.addFile(u":/resources/img/icons/refresh-cw.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.refreshDevicesButton.setIcon(icon6)
         self.refreshDevicesButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -865,7 +851,7 @@ class Ui_MainWindow(object):
 
         self.statusBarFrame = QFrame(self.mainFrame)
         self.statusBarFrame.setObjectName(u"statusBarFrame")
-        sizePolicy8 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy8 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy8.setHorizontalStretch(0)
         sizePolicy8.setVerticalStretch(0)
         sizePolicy8.setHeightForWidth(self.statusBarFrame.sizePolicy().hasHeightForWidth())
@@ -899,7 +885,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -914,11 +900,10 @@ class Ui_MainWindow(object):
         self.settingsButton.setText(QCoreApplication.translate("MainWindow", u" Settings", None))
         self.githubButton.setText(QCoreApplication.translate("MainWindow", u" Github", None))
         self.curKitGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Current Kit", None))
-        self.curKitLineEdit.setText("")
-        self.curKitSubLineEdit.setText("")
-        self.refreshKitDataButton.setText(QCoreApplication.translate("MainWindow", u"Get Current Kit", None))
         self.obsGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"OBS Source", None))
         self.obs_src_label.setText("")
+        self.curKitLineEdit.setText("")
+        self.curKitSubLineEdit.setText("")
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Drum Kit List", None))
         ___qtablewidgetitem = self.kitTableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Name", None));
@@ -936,9 +921,8 @@ class Ui_MainWindow(object):
         self.logBrowser.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.875pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>", None))
         self.midiDeviceGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"Select Roland Drum Module", None))
         self.midiDeviceComboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"Select a MIDI Device", None))
 
@@ -970,7 +954,7 @@ class Ui_MainWindow(object):
 ################################################################################
 ## Form generated from reading UI file 'ReactDialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.2
+## Created by: Qt User Interface Compiler version 6.5.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################

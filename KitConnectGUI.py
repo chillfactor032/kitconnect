@@ -168,7 +168,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Other Button/Widget Signals
         self.midiDeviceComboBox.currentIndexChanged.connect(self.deviceSelected)
-        self.refreshKitDataButton.clicked.connect(self.refreshKitData)
         self.refreshDevicesButton.clicked.connect(self.refreshDevices)
         self.browseFileButton.clicked.connect(self.browseOBSFile)
         self.settingsChatBotCheckbox.stateChanged.connect(self.chatBotCheckBoxChanged)
@@ -339,13 +338,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         default_kit_data = json.loads(kit_default_data_file_text)
         return default_kit_data
 
-    def refreshKitData(self):
-        self.status("Refreshing Kit Data...", 2000)
-        self.refreshKitDataButton.setEnabled(False)
-        QTimer.singleShot(2000, lambda: self.refreshKitDataButton.setEnabled(True))
-        if self.td50x:
-            self.td50x.refresh_current_kit()
-
     def closeTD50X(self):
         if self.td50x:
             self.log(f"Disconnecting old MIDI device [{self.td50x.port_name}]")
@@ -377,7 +369,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.current_kit_num = num
         self.current_kit_name = name
         self.current_kit_subname = subname
-        self.log(f"Current Kit Updated: {self.current_kit_num} - {self.current_kit_name}")
+        #self.log(f"Current Kit Updated: {self.current_kit_num} - {self.current_kit_name}")
         if not os.path.exists(self.obsFilePath):
             return
         template_str = self.obsFileTemplateEdit.document().toPlainText()
@@ -396,7 +388,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.current_kit_num != self.last_kit_sent:
             self.updateChatBotKit(self.twitchbot_key, self.twitch_channel, self.current_kit_num, self.current_kit_name, self.current_kit_subname)
             self.last_kit_sent = self.current_kit_num
-            self.log(f"Kit Sent To Chatbot: {self.current_kit_num} - {self.current_kit_name}")
+            #self.log(f"Kit Sent To Chatbot: {self.current_kit_num} - {self.current_kit_name}")
 
     # Select the file to write kit into to for OBS
     def browseOBSFile(self):
@@ -436,9 +428,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         elif sender == self.settingsButton:
             self.settingsButton.setStyleSheet(self.menu_button_active_css)
             self.stackedWidget.setCurrentWidget(self.settingsWidget)
-        elif sender == self.reactiveButton:
-            self.reactiveButton.setStyleSheet(self.menu_button_active_css)
-            self.stackedWidget.setCurrentWidget(self.reactiveWidget)
         elif sender == self.githubButton:
             QDesktopServices.openUrl(self.repoUrl)
 
