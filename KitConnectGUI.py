@@ -340,14 +340,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def closeTD50X(self):
         if self.td50x:
-            self.log(f"Disconnecting old MIDI device [{self.td50x.port_name}]")
+            self.log(f"Disconnecting MIDI device [{self.td50x.port_name}]")
             self.td50x.midi_stop()
             self.td50x = None
             self.log("MIDI Device Disconnected")
     
     def deviceConnected(self):
         self.log("Midi Device Connected")
-        self.refreshKitData()
 
     def deviceSelected(self, index):
         self.closeTD50X()
